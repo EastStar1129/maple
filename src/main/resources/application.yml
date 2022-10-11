@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/maple_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: maple
+    password: maplepass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    static-path-pattern: /resources/**
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+mybatis:
+  config: mybatis-config.xml
+  type-aliases-package: com.nexon.maple.model
+  mapper-locations: classpath:com/nexon/maple/mybatis/**/*.xml
+
