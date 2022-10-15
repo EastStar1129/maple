@@ -1,15 +1,15 @@
-package com.nexon.maple.databaseConnection;
+package com.nexon.maple.connectionTest;
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class DatabaseConnectionTest {
 
     @Autowired
@@ -23,8 +23,8 @@ public class DatabaseConnectionTest {
 
     //MyBatis와 Mysql 서버가 제대로 연결되었는지 Test
     @Test
-    public void testSession(){
-        assertAll(() -> assertNotNull(sqlFactory.openSession()),
-                () -> assertNotNull(sqlFactory.openSession().getConnection()));
+    public void testSession() {
+        assertNotNull(sqlFactory.openSession());
+        assertNotNull(sqlFactory.openSession().getConnection());
     }
 }

@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.nexon'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -19,13 +19,23 @@ repositories {
 }
 
 dependencies {
+    //sprnig boot web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //database
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
+
+    //jsoup
+    implementation 'org.jsoup:jsoup:1.15.3'
+
+    //dev tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
     //jsp 사용
     implementation 'javax.servlet:jstl'

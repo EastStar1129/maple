@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nexon.maple.userInfo.repository.UserInfoDao">
+    <!-- 회원 조회 -->
+    <select id="find" parameterType="Long" resultType="com.nexon.maple.userInfo.entity.UserInfo" >
+        SELECT
+               ID, NAME, GRADE_CODE GRADECODE
+        FROM USER_INFO
+        WHERE ID = #{value}
+    </select>
+
+    <select id="findByName" parameterType="String" resultType="com.nexon.maple.userInfo.entity.UserInfo" >
+        SELECT ID
+        FROM USER_INFO
+        WHERE NAME = #{value}
+    </select>
+
+    <select id="findByNameByPassword" parameterType="com.nexon.maple.userInfo.entity.UserInfo"
+            resultType="com.nexon.maple.userInfo.entity.UserInfo" >
+        SELECT ID
+        FROM USER_INFO
+        WHERE PASSWORD = #{password}
+        AND NAME = #{name}
+    </select>
+
+    <!-- 회원 등록 -->
+    <insert id="save" parameterType="com.nexon.maple.userInfo.entity.UserInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO USER_INFO(password, name, grade_code, created_at)
+        VALUES(#{password}, #{name}, #{gradeCode}, #{createdAt})
+    </insert>
+
+</mapper>

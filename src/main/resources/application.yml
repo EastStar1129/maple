@@ -9,9 +9,12 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+  devtools:
+    restart:
+      enabled: true
 
 mybatis:
   config: mybatis-config.xml
   type-aliases-package: com.nexon.maple.model
-  mapper-locations: classpath:com/nexon/maple/mybatis/**/*.xml
+  mapper-locations: classpath:mybatis/**/*.xml
 
