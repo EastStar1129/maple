@@ -1,4 +1,8 @@
 ##메이플 스토리 프로젝트
+개발 (기술스택)
+![img.png](img.png)
+![img_1.png](img_1.png)
+
 
 ### 설정
 - [x] mysql 설치 
