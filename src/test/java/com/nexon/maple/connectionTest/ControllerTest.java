@@ -1,19 +1,22 @@
 package com.nexon.maple.connectionTest;
 
+import com.nexon.maple.view.ViewController;
+import com.nexon.maple.view.service.ViewService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(ViewController.class)
 public class ControllerTest{
+
+    @MockBean
+    private ViewService viewService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -22,7 +25,7 @@ public class ControllerTest{
     public void test_url()  throws Exception{
         //when
         ResultActions indexUrl = mockMvc.perform(get("/"));
-        ResultActions failUrl = mockMvc.perform(get("/2"));
+        ResultActions failUrl = mockMvc.perform(get("/index2"));
 
         //then
         indexUrl.andExpect(status().isOk());
