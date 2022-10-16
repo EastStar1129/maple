@@ -8,25 +8,25 @@ const METHOD_TYPE = {
 
 // FormData to serialize
 let loading = false;
-const mapleFetch = (url, method, header, body, then) => {
+const mapleFetch = (url, method, headers, body, then) => {
     if(loading) {
         console.log("작업이 진행중입니다.");
         return;
     }
+
+    let fetchConfig = {};
+
     if(url === null || method === null) {
         return;
     }
-    if(header === null) {
-        header = {};
-    }
-    if(body === null) {
-        body = {};
+    fetchConfig.method = method;
+
+    if(headers === null) {
+        fetchConfig.headers = headers;
     }
 
-    const fetchConfig = {
-        method: method,
-        headers: header,
-        body: body
+    if(body !== null) {
+        fetchConfig.body = body;
     }
 
     fetch(url, fetchConfig)

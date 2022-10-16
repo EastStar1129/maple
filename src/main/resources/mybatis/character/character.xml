@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nexon.maple.character.repository.CharacterInfoDao">
+
+    <!-- 캐릭터 정보 조회 -->
+    <select id="findByUserName" parameterType="String" resultType="com.nexon.maple.character.entity.CharacterInfo">
+        SELECT
+               ID, IMAGE, CHARACTER_RANK characterRank, RANK_MOVE rankMove,
+               NAME, JOB1, JOB2, CHARACTER_LEVEL characterLevel,
+               EXPERIENCE, POPULARITY, GUILD_NAME guildName, CREATED_AT createdAt
+        FROM CHARACTER_INFO
+        WHERE NAME = #{name}
+    </select>
+
+    <!-- 캐릭터 정보 등록 -->
+    <insert id="save" parameterType="com.nexon.maple.character.entity.CharacterInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO CHARACTER_INFO(IMAGE, CHARACTER_RANK, RANK_MOVE, NAME, JOB1, JOB2, CHARACTER_LEVEL, EXPERIENCE, POPULARITY, GUILD_NAME, CREATED_AT)
+        VALUES(#{image}, #{characterRank}, #{rankMove}, #{name}, #{job1}, #{job2}, #{characterLevel}, #{experience}, #{popularity}, #{guildName}, #{createdAt})
+    </insert>
+
+</mapper>

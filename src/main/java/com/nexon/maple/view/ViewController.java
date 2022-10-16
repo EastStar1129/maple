@@ -12,9 +12,14 @@ public class ViewController {
 
     private final ViewService viewService;
 
-    @GetMapping({"/", "index"})
+    @GetMapping(value = {"/", "/index"})
     public String index() {
         return "index";
+    }
+
+    @GetMapping(value = {"/character", "/character/{userName}"})
+    public String character(){
+        return "character/character";
     }
 
     @GetMapping("/user/regist")
