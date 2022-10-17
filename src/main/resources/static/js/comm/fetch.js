@@ -13,7 +13,7 @@ const mapleFetch = (url, method, headers, body, then) => {
         console.log("작업이 진행중입니다.");
         return;
     }
-
+    loading = true;
     let fetchConfig = {};
 
     if(url === null || method === null) {
@@ -35,11 +35,6 @@ const mapleFetch = (url, method, headers, body, then) => {
 }
 
 const mapleFetchAsync = async (url, method, headers, body) => {
-    if(loading) {
-        console.log("작업이 진행중입니다.");
-        return;
-    }
-
     let fetchConfig = {};
 
     if(url === null || method === null) {

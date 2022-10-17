@@ -67,7 +67,7 @@
         const url = "/"+nameValue+"/otps";
         const method = METHOD_TYPE.POST;
 
-        mapleFetch(url, method, null, null,
+        mapleFetch(url, method, {}, null,
             (response) => response.text().then((value) => {
                 document.getElementById('otpNumber').value = value;
                 alert('OTP 번호가 발급되었습니다.');
