@@ -1,5 +1,6 @@
 package com.nexon.maple.character.service;
 
+import com.nexon.maple.character.dto.ResponseCharacterInfo;
 import com.nexon.maple.character.entity.CharacterInfo;
 import com.nexon.maple.character.repository.CharacterInfoDao;
 import com.nexon.maple.comm.maplestoryHomepage.CustomMapleCharacter;
@@ -13,7 +14,7 @@ import org.springframework.util.Assert;
 public class CharacterInfoService {
     private final CharacterInfoDao characterDao;
 
-    public MapleCharacter selectCharacter(String userName) {
+    public ResponseCharacterInfo selectCharacter(String userName) {
         /*
             1. 조회
             2. 없는 경우 메이플사이트 조회
@@ -23,7 +24,7 @@ public class CharacterInfoService {
         return findByUserName(userName);
     }
 
-    public MapleCharacter findByUserName(String userName) {
+    public ResponseCharacterInfo findByUserName(String userName) {
         CharacterInfo characterInfo = CharacterInfo.builder()
                 .name(userName)
                 .build();
@@ -31,28 +32,15 @@ public class CharacterInfoService {
         characterInfo = characterDao.findByUserName(characterInfo);
 
         if(characterInfo == null) {
-            MapleCharacter mapleCharacter = new CustomMapleCharacter(userName).getMapleCharacter();
-            save(mapleCharacter);
-            return mapleCharacter;
+            return save(new CustomMapleCharacter(userName).getMapleCharacter());
         }
 
-        return MapleCharacter.builder()
-                .image(characterInfo.getImage())
-                .rank(characterInfo.getCharacterRank())
-                .rankMove(characterInfo.getRankMove())
-                .userName(characterInfo.getName())
-                .job1(characterInfo.getJob1())
-                .job2(characterInfo.getJob2())
-                .level(characterInfo.getCharacterLevel())
-                .experience(characterInfo.getExperience())
-                .popularity(characterInfo.getPopularity())
-                .guildName(characterInfo.getGuildName())
-                .build();
+        return toResponseCharacterInfo(characterInfo);
     }
 
-    public void save(MapleCharacter mapleCharacter) {
+    public ResponseCharacterInfo save(MapleCharacter mapleCharacter) {
         if(mapleCharacter == null) {
-            return;
+            return null;
         }
 
         CharacterInfo characterInfo = CharacterInfo.builder()
@@ -69,5 +57,23 @@ public class CharacterInfoService {
                 .build();
 
         Assert.isTrue(characterDao.save(characterInfo) == 1, "저장되지 않았습니다.");
+
+        return toResponseCharacterInfo(characterInfo);
+    }
+
+    public ResponseCharacterInfo toResponseCharacterInfo(CharacterInfo characterInfo) {
+        return ResponseCharacterInfo.builder()
+                .id(characterInfo.getId())
+                .image(characterInfo.getImage())
+                .rank(characterInfo.getCharacterRank())
+                .rankMove(characterInfo.getRankMove())
+                .userName(characterInfo.getName())
+                .job1(characterInfo.getJob1())
+                .job2(characterInfo.getJob2())
+                .level(characterInfo.getCharacterLevel())
+                .experience(characterInfo.getExperience())
+                .popularity(characterInfo.getPopularity())
+                .guildName(characterInfo.getGuildName())
+                .build();
     }
 }

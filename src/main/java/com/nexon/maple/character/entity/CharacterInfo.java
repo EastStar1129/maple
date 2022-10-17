@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 public class CharacterInfo {
-    private String id; //기본키
+    private Long id; //기본키
     private String image; //캐릭터 이미지
     private Long characterRank; //순위
     private String rankMove; //순위변동
@@ -25,7 +25,7 @@ public class CharacterInfo {
     private LocalDateTime createdAt; //생성일자
 
     @Builder
-    public CharacterInfo(String id, String image, Long characterRank, String rankMove, String name, String job1, String job2,
+    public CharacterInfo(Long id, String image, Long characterRank, String rankMove, String name, String job1, String job2,
                          String characterLevel, String experience, Long popularity, String guildName, LocalDateTime createdAt) {
         validateNull(name);
 
