@@ -21,7 +21,7 @@ const mapleFetch = (url, method, headers, body, then) => {
     }
     fetchConfig.method = method;
 
-    if(headers === null) {
+    if(headers !== null) {
         fetchConfig.headers = headers;
     }
 
@@ -42,7 +42,7 @@ const mapleFetchAsync = async (url, method, headers, body) => {
     }
     fetchConfig.method = method;
 
-    if(headers === null) {
+    if(headers !== null) {
         fetchConfig.headers = headers;
     }
 
