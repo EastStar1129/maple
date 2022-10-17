@@ -1,4 +1,8 @@
 ##메이플 스토리 프로젝트
+개발 (기술스택)
+![img.png](img.png)
+![img_1.png](img_1.png)
+
 
 ### 설정
 - [x] mysql 설치 
@@ -10,6 +14,7 @@
   - 테스트 작성
 - [x] jsp 설정
   - index.jsp 
+- [x] favicon 완료
 
 ### 회원가입
 - [x] 회원가입 DDL 작성
@@ -24,11 +29,12 @@
   - [ ] 로그인 인증 방식 추가 (OAuth 2.0 + jwt)
   - [ ] https 적용
 
-### 캐릭터 조회 기능 추가
-- [ ] 캐릭터 조회화면 추가
-  - [ ] maple.gg 캐릭터 조회 화면 벤치마킹 
-  - [ ] 댓글 기능추가
-  - [ ] 인증된 회원인지 추가
+### 캐릭터 조회 기능
+- [x] 캐릭터 조회화면 추가
+
+### 댓글 기능
+- [x] 댓글리스트 
+- [ ] 댓글 작성 시 인증된 회원 체크
 
 ### 회원 DDL 로직
 ``` SQL
@@ -62,6 +68,44 @@ create table TERMS_INFO(
 	CONTENT VARCHAR(1000)  COMMENT '약관내용',
 	REQUIRED_TERMS VARCHAR(1) COMMENT '필수 약관'
 );
+
+-- OTP 발급 테이블
+create table OTP_INFO(
+	IDX int primary key AUTO_INCREMENT COMMENT '일련번호',
+	USER_NAME VARCHAR(20) COMMENT '유저 아이디',
+	OTP_NUMBER VARCHAR(8)  COMMENT 'OTP번호',
+	CREATED_AT DATETIME  COMMENT '생성일자',
+	key idx_user_info_name(USER_NAME)
+);
+
+-- 캐릭터 정보
+create table CHARACTER_INFO(
+	ID int primary key AUTO_INCREMENT COMMENT '일련번호', 
+	IMAGE varchar(1000) COMMENT '캐릭터이미지', 
+	CHARACTER_RANK bigint(20) COMMENT '순위', 
+	RANK_MOVE varchar(21) COMMENT '순위변동', 
+	NAME varchar(255) COMMENT '캐릭터명', 
+	JOB1 varchar(255) COMMENT '직업군', 
+	JOB2 varchar(255) COMMENT '직업', 
+	CHARACTER_LEVEL int(5) COMMENT '레벨', 
+	EXPERIENCE varchar(255) COMMENT '경험치', 
+	POPULARITY bigint(20) COMMENT '인기도', 
+	GUILD_NAME varchar(255) COMMENT '길드명', 
+	CREATED_AT DATETIME  COMMENT '생성일자',
+	key idx_character_info_name(NAME)
+);
+
+-- 댓글 정보
+create table COMMENT_INFO(
+	ID int primary key AUTO_INCREMENT COMMENT '일련번호', 
+	CHARACTER_ID int COMMENT '캐릭터 일련번호',
+	USER_ID bigint(20) COMMENT '로그인 유저 일련번호',
+	COMMENT VARCHAR(4000) COMMENT '댓글',
+	CREATED_AT DATETIME  COMMENT '생성일자',
+	FOREIGN KEY(USER_ID) REFERENCES USER_INFO(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(CHARACTER_ID) REFERENCES CHARACTER_INFO(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	key idx_character_id(CHARACTER_ID)
+)
 
 insert into TERMS_INFO(TYPE, NAME, CONTENT, REQUIRED_TERMS) VALUES('로그인', '개인정보수집 및 이용동의', '1. 업무처리에 필요한 개인정보입니다.
 캐릭터 명, 패스워드
@@ -99,4 +143,16 @@ create table OTP_INFO(
 	CREATED_AT DATETIME  COMMENT '생성일자',
 	key idx_user_info_name(USER_NAME)
 );
+
+-- 댓글 정보
+create table COMMENT_INFO(
+	ID int primary key AUTO_INCREMENT COMMENT '일련번호', 
+	CHARACTER_ID int COMMENT '캐릭터 일련번호',
+	USER_ID bigint(20) COMMENT '로그인 유저 일련번호',
+	COMMENT VARCHAR(4000) COMMENT '댓글',
+	CREATED_AT DATETIME  COMMENT '생성일자',
+	FOREIGN KEY(USER_ID) REFERENCES USER_INFO(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(CHARACTER_ID) REFERENCES CHARACTER_INFO(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	key idx_character_id(CHARACTER_ID)
+)
 ```

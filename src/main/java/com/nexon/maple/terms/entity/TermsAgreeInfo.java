@@ -1,6 +1,5 @@
 package com.nexon.maple.terms.entity;
 
-import com.nexon.maple.userInfo.dto.GradeCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

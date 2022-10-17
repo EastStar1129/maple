@@ -33,4 +33,19 @@ public class CustomDocumentTest {
         //then
         assertFalse(customComment.equalsComment(otpNumber));
     }
+
+    @Test
+    public void 캐릭터_테스트() {
+        //given
+        String admin = "admin";
+        String user = "구로5동혀로";
+
+        //when
+        CustomMapleCharacter customMapleCharacter = new CustomMapleCharacter(admin);
+        CustomMapleCharacter customMapleCharacter2 = new CustomMapleCharacter(user);
+
+        //then
+        assertNull(customMapleCharacter.getMapleCharacter());
+        assertNotNull(customMapleCharacter2.getMapleCharacter());
+    }
 }

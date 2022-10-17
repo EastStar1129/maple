@@ -39,7 +39,7 @@
         }
 
         const url = "/login";
-        const method = "POST";
+        const method = METHOD_TYPE.POST;
         const header = {
             "Content-Type": "application/json",
         };

@@ -3,7 +3,9 @@ package com.nexon.maple.otp.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
+import javax.validation.constraints.AssertTrue;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
@@ -16,15 +18,14 @@ public class Otp {
     private String otpNumber;
     private LocalDateTime createdAt;
 
-    private static final int otpNumberLength = 8;
+    private static final int OTP_NUMBER_LENGTH = 8;
 
     @Builder
     public Otp(Long idx, String userName, String otpNumber, LocalDateTime createdAt) {
         this.idx = idx;
-        this.userName = userName;
-
+        this.userName = Objects.requireNonNull(userName);
         validateOtpNumber(otpNumber);
-        this.otpNumber = otpNumber == null ? makeOtpNumber(otpNumberLength) : otpNumber;
+        this.otpNumber = otpNumber == null ? makeOtpNumber(OTP_NUMBER_LENGTH) : otpNumber;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
@@ -33,9 +34,7 @@ public class Otp {
             return;
         }
 
-        if(otpNumber.length() != otpNumberLength) {
-            new IllegalArgumentException("OTP는 8자리 입니다.");
-        }
+        Assert.isTrue(otpNumber.length() == OTP_NUMBER_LENGTH, "OTP 번호는 8자리 입니다.");
     }
 
     public String makeOtpNumber(int num) {

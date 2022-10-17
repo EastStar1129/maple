@@ -1,13 +1,10 @@
 package com.nexon.maple.userInfo.entity;
 
 import com.nexon.maple.comm.Encryption.SHA256;
-import com.nexon.maple.userInfo.dto.GradeCode;
 import lombok.*;
 import org.springframework.util.Assert;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @NoArgsConstructor

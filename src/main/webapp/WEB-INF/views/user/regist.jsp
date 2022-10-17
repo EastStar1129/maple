@@ -19,9 +19,7 @@
                 <c:otherwise>(선택)</c:otherwise>
             </c:choose>
         </h5>
-        <textarea>
-            ${item.content}
-        </textarea>
+        <textarea>${item.content}</textarea>
         <div>
             <input type="checkbox" name="checkbox" code="${item.code}" types="${item.type}" required="${item.requiredTerms}">
             <span>동의합니다.</span>
@@ -69,7 +67,7 @@
         const url = "/"+nameValue+"/otps";
         const method = METHOD_TYPE.POST;
 
-        mapleFetch(url, method, null, null,
+        mapleFetch(url, method, {}, null,
             (response) => response.text().then((value) => {
                 document.getElementById('otpNumber').value = value;
                 alert('OTP 번호가 발급되었습니다.');

@@ -1,13 +1,13 @@
-package com.nexon.maple.userInfo.dto;
+package com.nexon.maple.userInfo.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum GradeCode {
-    ADMIN("00"),
-    USER("01"),
-    BLOCK("02");
+    ADMIN("0"),
+    USER("1"),
+    BLOCK("2");
 
     @Getter
     private final String title;

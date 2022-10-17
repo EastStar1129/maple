@@ -6,6 +6,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     static-path-pattern: /resources/**
+    favicon:
+      enabled: false
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
