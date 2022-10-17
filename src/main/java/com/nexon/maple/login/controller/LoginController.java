@@ -16,7 +16,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity register(@RequestBody RegisterUserInfoCommand command) {
+    public ResponseEntity login(@RequestBody RegisterUserInfoCommand command) {
         loginService.login(command);
 
         return ResponseEntity.ok().build();
