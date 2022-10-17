@@ -18,7 +18,7 @@ public class Otp {
     private String otpNumber;
     private LocalDateTime createdAt;
 
-    private static final int OTP_NUMBER_LENGTH = 8;
+    public static final int OTP_NUMBER_LENGTH = 8;
 
     @Builder
     public Otp(Long idx, String userName, String otpNumber, LocalDateTime createdAt) {

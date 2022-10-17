@@ -1,36 +1,14 @@
 package com.nexon.maple.comment.entity;
 
-import com.nexon.maple.character.entity.CharacterInfo;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CommentInfoTest {
 
     @Test
-    public void 생성_테스트() {
-        //given
-        Long characterId = 1L;
-        Long userId = 1L;
-        String comment = "comment";
-
-        //when
-        CommentInfo commentInfo = CommentInfo.builder()
-                .characterId(characterId)
-                .userId(userId)
-                .comment(comment)
-                .build();
-
-        //then
-        assertAll(
-                () -> assertEquals(characterId, commentInfo.getCharacterId()),
-                () -> assertEquals(userId, commentInfo.getUserId()),
-                () -> assertEquals(comment, commentInfo.getComment())
-        );
-    }
-
-    @Test
-    public void 필수값_없이_생성_실패테스트() {
+    public void 필수값인_캐릭터번호_유저번호_댓글을입력하지않은_실패테스트() {
         //given
         Long characterId = 1L;
         Long userId = 1L;
