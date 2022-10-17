@@ -2,9 +2,6 @@ package com.nexon.maple.character.entity;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterInfoTest {
