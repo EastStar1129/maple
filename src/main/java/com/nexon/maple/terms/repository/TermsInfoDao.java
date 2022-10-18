@@ -12,6 +12,6 @@ import java.util.List;
 @Mapper
 public interface TermsInfoDao {
     //이용약관 조회
-    List<TermsInfo> findByType(String type);
+    List<TermsInfo> findAllByType(String type);
     int save(TermsAgreeInfo termsAgreeInfo);
 }

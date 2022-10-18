@@ -1,6 +1,7 @@
 package com.nexon.maple.terms.dto;
 
 import com.nexon.maple.terms.entity.TermsInfo;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter

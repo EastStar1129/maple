@@ -14,11 +14,23 @@ public class UserInfoReadService {
 
     public ResponseUserInfo selectUserInfo(Long id) {
         UserInfo userInfo = userInfoDao.find(id);
-        Assert.notNull(userInfo, "회원정보가 없습니다.");
         return toResponseUserInfo(userInfo);
     }
 
+    public ResponseUserInfo selectUserInfo(String name) {
+        UserInfo userInfo = userInfoDao.findByName(name);
+        return toResponseUserInfo(userInfo);
+    }
+
+    public ResponseUserInfo selectUserInfo(UserInfo userInfo) {
+        UserInfo userInfo2 = userInfoDao.findByNameAndPassword(userInfo);
+        return toResponseUserInfo(userInfo2);
+    }
+
     private ResponseUserInfo toResponseUserInfo(UserInfo userInfo) {
+        if(userInfo == null) {
+            return null;
+        }
         return new ResponseUserInfo(userInfo.getId(), userInfo.getName(), userInfo.getGradeCode());
     }
 }

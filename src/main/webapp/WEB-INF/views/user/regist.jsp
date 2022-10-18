@@ -6,6 +6,7 @@
 <html lang="ko">
 <head>
     <title>회원가입</title>
+    <link rel="shortcut icon" href="/resources/favicon.ico"/>
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
 </head>
 <body>
@@ -28,7 +29,7 @@
 
     <form id="frmRegister">
         <div>
-            <input type="text" id="name" name="name" placeholder="대표 캐릭터명" maxlength="20">
+            <input type="text" id="name" name="name" placeholder="대표 캐릭터명" maxlength="10">
         </div>
         <div>
             <input type="password" id="password" name="password" placeholder="패스워드" maxlength="20"><br>
@@ -68,10 +69,16 @@
         const method = METHOD_TYPE.POST;
 
         mapleFetch(url, method, {}, null,
-            (response) => response.text().then((value) => {
-                document.getElementById('otpNumber').value = value;
-                alert('OTP 번호가 발급되었습니다.');
-            })
+            (response) => {
+                if(response.status !== 200){
+                    alert('아이디를 확인해주세요.');
+                    return;
+                }
+                response.text().then((value) => {
+                    document.getElementById('otpNumber').value = value;
+                    alert('OTP 번호가 발급되었습니다.');
+                })
+            }
         );
     }
 
@@ -143,8 +150,15 @@
     }
 
     const validationName = (to) => {
-        if(to.length == 0) {
-            console.log('아이디를 입력하세요.');
+        const MIN = 2;
+        const MAX = 10;
+        if(to.length === 0) {
+            alert('아이디를 입력하세요.');
+            return false;
+        }
+
+        if(!(to.length >= MIN && to.length <= MAX)) {
+            alert('아이디는 '+ MIN + '~' + MAX + '자리 입니다.');
             return false;
         }
 
@@ -152,16 +166,16 @@
     }
     const validationPassword = (to) => {
         if(to.length == 0) {
-            console.log('패스워드를 입력하세요.');
+            alert('패스워드를 입력하세요.');
             return false;
         }
 
         if(to.length >= 15) {
-            console.log('15자리 이하 패스워드를 입력하세요.');
+            alert('15자리 이하 패스워드를 입력하세요.');
             return false;
         }
         if(to.length < 8) {
-            console.log('8자리 이상 패스워드를 입력하세요.');
+            alert('8자리 이상 패스워드를 입력하세요.');
             return false;
         }
 
@@ -170,7 +184,7 @@
 
     const validationPageNumber = (to) => {
         if(to.length < 1) {
-            console.log('댓글페이지 번호를 입력하세요. (1이상)');
+            alert('댓글페이지 번호를 입력하세요. (1이상)');
             return false;
         }
 

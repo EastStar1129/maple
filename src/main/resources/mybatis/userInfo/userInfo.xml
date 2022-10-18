@@ -18,7 +18,8 @@
         WHERE NAME = #{value}
     </select>
 
-    <select id="findByNameByPassword" parameterType="com.nexon.maple.userInfo.entity.UserInfo"
+
+    <select id="findByNameAndPassword" parameterType="com.nexon.maple.userInfo.entity.UserInfo"
             resultType="com.nexon.maple.userInfo.entity.UserInfo" >
         SELECT ID
         FROM USER_INFO
