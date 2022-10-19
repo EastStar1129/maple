@@ -19,7 +19,7 @@ public class CommentController {
         return ResponseEntity.ok().body(commentReadService.selectComment(characterId));
     }
 
-    @PutMapping(value = "/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveComment(@RequestBody WriteComment writeComment) {
         commentWriteService.saveComment(writeComment);
         return ResponseEntity.ok().build();
