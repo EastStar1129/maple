@@ -1,4 +1,4 @@
-package com.nexon.maple.comm.Encryption;
+package com.nexon.maple.util.Encryption;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -1,9 +1,8 @@
 package com.nexon.maple.userInfo.entity;
 
-import com.nexon.maple.comm.Encryption.SHA256;
+import com.nexon.maple.util.Encryption.SHA256;
 import com.nexon.maple.userInfo.dto.UserName;
 import lombok.*;
-import org.apache.catalina.User;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;

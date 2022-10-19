@@ -1,11 +1,14 @@
 package com.nexon.maple.otp.controller;
 
 import com.nexon.maple.otp.service.OtpWriteService;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.lang.annotation.*;
 
 @RequiredArgsConstructor
 @RestController

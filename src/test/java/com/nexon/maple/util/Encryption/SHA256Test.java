@@ -1,4 +1,4 @@
-package com.nexon.maple.comm.Encryption;
+package com.nexon.maple.util.Encryption;
 
 import org.junit.jupiter.api.Test;
 

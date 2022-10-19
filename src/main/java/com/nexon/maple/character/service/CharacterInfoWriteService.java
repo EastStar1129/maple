@@ -2,7 +2,6 @@ package com.nexon.maple.character.service;
 
 import com.nexon.maple.character.entity.CharacterInfo;
 import com.nexon.maple.character.repository.CharacterInfoDao;
-import com.nexon.maple.comm.maplestoryHomepage.object.MapleCharacter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

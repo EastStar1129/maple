@@ -1,6 +1,6 @@
 package com.nexon.maple.userInfo.service;
 
-import com.nexon.maple.comm.maplestoryHomepage.CustomMapleComment;
+import com.nexon.maple.util.maplestoryHomepage.CustomMapleComment;
 import com.nexon.maple.otp.service.OtpReadService;
 import com.nexon.maple.terms.dto.ResponseTermsInfo;
 import com.nexon.maple.terms.dto.TermsType;

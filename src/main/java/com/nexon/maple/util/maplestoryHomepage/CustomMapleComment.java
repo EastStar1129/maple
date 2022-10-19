@@ -1,4 +1,4 @@
-package com.nexon.maple.comm.maplestoryHomepage;
+package com.nexon.maple.util.maplestoryHomepage;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

@@ -1,8 +1,7 @@
 package com.nexon.maple.userInfo.entity;
 
 
-import com.nexon.maple.comm.Encryption.SHA256;
-import com.nexon.maple.otp.entity.Otp;
+import com.nexon.maple.util.Encryption.SHA256;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

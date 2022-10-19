@@ -2,10 +2,9 @@ package com.nexon.maple.character.service;
 
 import com.nexon.maple.character.dto.ResponseCharacterInfo;
 import com.nexon.maple.character.entity.CharacterInfo;
-import com.nexon.maple.comm.maplestoryHomepage.CustomMapleCharacter;
-import com.nexon.maple.comm.maplestoryHomepage.object.MapleCharacter;
+import com.nexon.maple.util.maplestoryHomepage.CustomMapleCharacter;
+import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
