@@ -31,13 +31,19 @@ dependencies {
     //database
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.2'
-
     //jsoup
     implementation 'org.jsoup:jsoup:1.15.3'
-
-    //dev tools
+    //dev-tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    //annotation-configuration
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-jwt'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
+
 
     //jsp 사용
     implementation 'javax.servlet:jstl'
