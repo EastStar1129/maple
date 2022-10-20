@@ -1,8 +1,10 @@
 package com.nexon.maple.userInfo.entity;
 
-import com.nexon.maple.util.Encryption.SHA256;
 import com.nexon.maple.userInfo.dto.UserName;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -25,10 +27,14 @@ public class UserInfo {
 
         validatePassword(password);
         this.name = new UserName(name).getUserName();
-        this.password = new SHA256().encrypt(password);
+        this.password = password;
 
         this.gradeCode = gradeCode == null ? GradeCode.USER.getTitle() : gradeCode;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+    }
+
+    public void encryptPassword(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.password = bCryptPasswordEncoder.encode(password);
     }
 
     private void validatePassword(String password) {

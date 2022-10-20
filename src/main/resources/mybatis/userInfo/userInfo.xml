@@ -13,7 +13,8 @@
     </select>
 
     <select id="findByName" parameterType="String" resultType="com.nexon.maple.userInfo.entity.UserInfo" >
-        SELECT ID
+        SELECT
+            ID, NAME, GRADE_CODE GRADECODE, PASSWORD
         FROM USER_INFO
         WHERE NAME = #{value}
     </select>

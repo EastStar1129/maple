@@ -1,6 +1,5 @@
 package com.nexon.maple.userInfo.service;
 
-import com.nexon.maple.util.maplestoryHomepage.CustomMapleComment;
 import com.nexon.maple.otp.service.OtpReadService;
 import com.nexon.maple.terms.dto.ResponseTermsInfo;
 import com.nexon.maple.terms.dto.TermsType;
@@ -9,7 +8,9 @@ import com.nexon.maple.terms.service.TermsInfoWriteService;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
 import com.nexon.maple.userInfo.dto.ResponseUserInfo;
 import com.nexon.maple.userInfo.entity.UserInfo;
+import com.nexon.maple.util.maplestoryHomepage.CustomMapleComment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -24,7 +25,7 @@ public class RegisteUserInfoService {
     private final UserInfoWriteService userInfoWriteService;
     private final UserInfoReadService userInfoReadService;
     private final OtpReadService otpReadService;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public void regist(RegisterUserInfoCommand registerUserInfoCommand) {
@@ -42,6 +43,9 @@ public class RegisteUserInfoService {
                 .name(registerUserInfoCommand.name())
                 .password(registerUserInfoCommand.password())
                 .build();
+
+        //패스워드 암호화
+        userInfo.encryptPassword(bCryptPasswordEncoder);
 
         //검증 로직
         validationUserInfo(registerUserInfoCommand);

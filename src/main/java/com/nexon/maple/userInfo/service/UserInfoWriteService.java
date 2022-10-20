@@ -1,7 +1,5 @@
 package com.nexon.maple.userInfo.service;
 
-import com.nexon.maple.otp.repository.OtpDao;
-import com.nexon.maple.terms.repository.TermsInfoDao;
 import com.nexon.maple.userInfo.entity.UserInfo;
 import com.nexon.maple.userInfo.repository.UserInfoDao;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +11,6 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class UserInfoWriteService {
     private final UserInfoDao userInfoDao;
-    private final OtpDao otpDao;
-    private final TermsInfoDao termsInfoDao;
 
     @Transactional
     public void regist(UserInfo userInfo){
