@@ -13,10 +13,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -24,11 +25,16 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CorsFilter corsFilter;
     private final AuthEntryPointJwt authEntryPointJwt;
-    private final UserInfoDao userinfoDao;
+    private final UserInfoDao userInfoDao;
     private final JwtToken jwtToken;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .antMatchers("/favicon.ico", "/logout", "/character", "/character/**", "/user/regist", "/user/login");
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,13 +54,15 @@ public class SecurityConfig{
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-                .apply(new MyCustomDsl())
-            .and()
                 .authorizeRequests()
                 .antMatchers("/user/info")
                     .authenticated()
                 .antMatchers(HttpMethod.POST, "/comments")
                     .access(rolesToString(GradeCode.USER.getTitle(), GradeCode.USER.getTitle()))
+            .and()
+                .apply(new MyCustomDsl())
+            .and()
+                .authorizeRequests()
                 .anyRequest()
                 .permitAll()
             .and()
@@ -72,8 +80,10 @@ public class SecurityConfig{
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsFilter)
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, bCryptPasswordEncoder, jwtToken))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userinfoDao, jwtToken));
+                    .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtToken),
+                            UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userInfoDao, jwtToken),
+                            UsernamePasswordAuthenticationFilter.class);
         }
     }
 

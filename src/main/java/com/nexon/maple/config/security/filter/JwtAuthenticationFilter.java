@@ -1,7 +1,5 @@
 package com.nexon.maple.config.security.filter;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexon.maple.config.security.auth.PrincipalDetails;
 import com.nexon.maple.config.security.jwt.JwtToken;
@@ -12,16 +10,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 /*
@@ -53,7 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private static final String LOGIN_URL = "/login";
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, BCryptPasswordEncoder bCryptPasswordEncoder, JwtToken jwtToken) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken) {
         setFilterProcessesUrl(LOGIN_URL);
         this.authenticationManager = authenticationManager;
         this.jwtToken = jwtToken;
@@ -79,15 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(userInfo.getName(), userInfo.getPassword());
 
             return authenticationManager.authenticate(authenticationToken);
-        } catch (BadCredentialsException e) {
-            new BadCredentialsException("자격증명 실패");
-        } catch (UnsupportedEncodingException e) {
-            new BadCredentialsException("자격증명 실패 " + e.getMessage());
-        } catch (StreamReadException e) {
-            new BadCredentialsException("자격증명 실패 " + e.getMessage());
-        } catch (DatabindException e) {
-            new BadCredentialsException("자격증명 실패 " + e.getMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             new BadCredentialsException("자격증명 실패 " + e.getMessage());
         }
         return null;
@@ -97,13 +86,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        System.out.println(jwtToken.getHeader());
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-        response.addHeader(jwtToken.getHeader(), jwtToken.generateToken(principalDetails));
-    }
 
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.addHeader(jwtToken.getHeader(),
+                jwtToken.getType()+ " " + jwtToken.generateAccessToken(principalDetails));
+
+        Cookie RefreshTokenCookie = new Cookie(jwtToken.getHeader(), jwtToken.generateRefreshToken());
+        RefreshTokenCookie.setMaxAge(jwtToken.REFRESH_TOKEN_EXPIRE_TIME);
+        RefreshTokenCookie.setHttpOnly(true);
+        RefreshTokenCookie.setSecure(true);
+        response.addCookie(RefreshTokenCookie);
     }
 }

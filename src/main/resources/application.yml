@@ -14,14 +14,15 @@ spring:
   devtools:
     restart:
       enabled: true
+
 mybatis:
   config: mybatis-config.xml
   type-aliases-package: com.nexon.maple.model
   mapper-locations: classpath:mybatis/**/*.xml
+
 jwt:
-  subject: subject
-  key: key
-  name: name
-  prefix: Bearer
+  key: maabpcldeesftgohriyjkkely
+  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+  type: Bearer
   header: Authorization
 
