@@ -21,8 +21,13 @@ const mapleFetch = (url, method, headers, body, then) => {
     }
     fetchConfig.method = method;
 
-    if(headers !== null) {
-        fetchConfig.headers = headers;
+    fetchConfig.headers = headers;
+    if(headers === null) {
+        fetchConfig.headers = {};
+    }
+    let authorization = localStorage.getItem("Authorization")
+    if(authorization !== null) {
+        fetchConfig.headers.authorization = authorization;
     }
 
     if(body !== null) {
@@ -42,8 +47,13 @@ const mapleFetchAsync = async (url, method, headers, body) => {
     }
     fetchConfig.method = method;
 
-    if(headers !== null) {
-        fetchConfig.headers = headers;
+    fetchConfig.headers = headers;
+    if(headers === null) {
+        fetchConfig.headers = {};
+    }
+    let authorization = localStorage.getItem("Authorization")
+    if(authorization !== null) {
+        fetchConfig.headers.authorization = authorization;
     }
 
     if(body !== null) {

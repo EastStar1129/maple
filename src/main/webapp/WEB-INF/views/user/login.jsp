@@ -28,6 +28,9 @@
 
 </body>
 <script>
+    if(localStorage.getItem('Authorization') != null) {
+        location.href = "/";
+    }
     const fncLogin = () => {
         const serializedFrmRegisterData = getFormDataJson("frmRegister");
 
@@ -46,11 +49,12 @@
         };
 
         const body = JSON.stringify(serializedFrmRegisterData);
-
+        const headersOption = "Authorization";
         mapleFetch(url, method, header, body,
             (response) => {
                 if (response.status == 200) {
-                    location.href = '/';
+                    localStorage.setItem("Authorization", response.headers.get("Authorization"));
+                    location.href = "/";
                     return;
                 }
                 alert('회원정보를 확인하세요.');

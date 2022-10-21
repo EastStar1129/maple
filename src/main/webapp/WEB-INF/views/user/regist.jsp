@@ -58,6 +58,10 @@
 </body>
 
 <script>
+    if(localStorage.getItem('Authorization') != null) {
+        location.href = "/";
+    }
+
     const fncCreateOtp = () => {
         const nameValue = document.getElementById('name').value;
 
