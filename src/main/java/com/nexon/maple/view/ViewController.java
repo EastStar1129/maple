@@ -1,16 +1,25 @@
 package com.nexon.maple.view;
 
+import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.view.service.ViewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RequiredArgsConstructor
 @Controller
 public class ViewController {
 
     private final ViewService viewService;
+    private final JwtToken jwtToken;
+
+    @GetMapping("/favicon.ico")
+    public String favicon() {
+        return "/favicon.ico";
+    }
 
     @GetMapping(value = {"/", "/index"})
     public String index() {
@@ -29,7 +38,7 @@ public class ViewController {
     }
 
     @GetMapping("/user/login")
-    public String login(){
+    public String login(HttpServletRequest request){
         return "user/login";
     }
 

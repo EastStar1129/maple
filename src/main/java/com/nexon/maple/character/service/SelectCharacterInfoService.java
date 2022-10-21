@@ -2,47 +2,45 @@ package com.nexon.maple.character.service;
 
 import com.nexon.maple.character.dto.ResponseCharacterInfo;
 import com.nexon.maple.character.entity.CharacterInfo;
-import com.nexon.maple.character.repository.CharacterInfoDao;
-import com.nexon.maple.comm.maplestoryHomepage.CustomMapleCharacter;
-import com.nexon.maple.comm.maplestoryHomepage.object.MapleCharacter;
+import com.nexon.maple.util.maplestoryHomepage.CustomMapleCharacter;
+import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class CharacterInfoService {
-    private final CharacterInfoDao characterDao;
+public class SelectCharacterInfoService {
+    private final CharacterInfoReadService characterInfoReadService;
+    private final CharacterInfoWriteService characterInfoWriteService;
 
-    public ResponseCharacterInfo selectCharacter(String userName) {
+    @Transactional
+    public ResponseCharacterInfo select(String userName) {
         /*
-            1. 조회
-            2. 없는 경우 메이플사이트 조회
-                2-1 있으면 데이터 저장
-            반환
+            1. DB 조회
+            2. 조회 데이터가 없는 경우 크롤링
+            3. 크롤링 데이터가 있으면 저장
          */
-        return findByUserName(userName);
-    }
-
-    public ResponseCharacterInfo findByUserName(String userName) {
-        CharacterInfo characterInfo = CharacterInfo.builder()
-                .name(userName)
-                .build();
-
-        characterInfo = characterDao.findByUserName(characterInfo);
-
-        if(characterInfo == null) {
-            return save(new CustomMapleCharacter(userName).getMapleCharacter());
+        // 1
+        var characterInfo = characterInfoReadService.select(userName);
+        if(characterInfo != null) {
+            return toResponseCharacterInfo(characterInfo);
         }
 
-        return toResponseCharacterInfo(characterInfo);
-    }
-
-    public ResponseCharacterInfo save(MapleCharacter mapleCharacter) {
+        // 2
+        MapleCharacter mapleCharacter = getMapleCharacter(userName);
         if(mapleCharacter == null) {
             return null;
         }
 
+        // 3
+        var saveCharacterInfo = toCharacterInfo(mapleCharacter);
+        characterInfoWriteService.save(saveCharacterInfo);
+
+        return toResponseCharacterInfo(saveCharacterInfo);
+    }
+
+    private CharacterInfo toCharacterInfo(MapleCharacter mapleCharacter) {
         CharacterInfo characterInfo = CharacterInfo.builder()
                 .image(mapleCharacter.getImage())
                 .characterRank(mapleCharacter.getRank())
@@ -55,10 +53,11 @@ public class CharacterInfoService {
                 .popularity(mapleCharacter.getPopularity())
                 .guildName(mapleCharacter.getGuildName())
                 .build();
+        return characterInfo;
+    }
 
-        Assert.isTrue(characterDao.save(characterInfo) == 1, "저장되지 않았습니다.");
-
-        return toResponseCharacterInfo(characterInfo);
+    private MapleCharacter getMapleCharacter(String userName) {
+        return new CustomMapleCharacter(userName).getMapleCharacter();
     }
 
     public ResponseCharacterInfo toResponseCharacterInfo(CharacterInfo characterInfo) {

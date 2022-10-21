@@ -6,7 +6,7 @@
 <mapper namespace="com.nexon.maple.terms.repository.TermsInfoDao">
 
     <!-- 이용약관 조회 -->
-    <select id="findByType" parameterType="String" resultType="com.nexon.maple.terms.entity.TermsInfo">
+    <select id="findAllByType" parameterType="String" resultType="com.nexon.maple.terms.entity.TermsInfo">
         SELECT CODE, TYPE, NAME, CONTENT, REQUIRED_TERMS REQUIREDTERMS
         FROM TERMS_INFO
         WHERE TYPE = #{value}

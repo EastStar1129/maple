@@ -20,7 +20,7 @@ public class ViewService {
     }
 
     public List<ResponseTermsInfo> findByTypeToLogin() {
-        List<TermsInfo> list = termsInfoDao.findByType(TermsType.LOGIN.getTitle());
+        List<TermsInfo> list = termsInfoDao.findAllByType(TermsType.LOGIN.getTitle());
 
         return list.stream()
                 .map(ResponseTermsInfo::new)

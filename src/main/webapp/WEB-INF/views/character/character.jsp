@@ -145,7 +145,7 @@
         }
 
         const url = "/comments";
-        const method = METHOD_TYPE.PUT;
+        const method = METHOD_TYPE.POST;
         const header = {
             'Content-Type': 'application/json'
         };

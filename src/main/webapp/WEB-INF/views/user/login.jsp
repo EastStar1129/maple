@@ -6,6 +6,7 @@
 <html lang="ko">
 <head>
     <title>로그인</title>
+    <link rel="shortcut icon" href="/resources/favicon.ico"/>
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
 </head>
 <body>
@@ -16,7 +17,7 @@
             <h1>login</h1>
         </div>
         <div>
-            <input type="text" id="name" name="name" placeholder="대표 캐릭터명" maxlength="20">
+            <input type="text" id="name" name="name" placeholder="대표 캐릭터명" maxlength="10">
         </div>
         <div>
             <input type="password" id="password" name="password" placeholder="패스워드" maxlength="20"><br>
@@ -27,6 +28,9 @@
 
 </body>
 <script>
+    if(localStorage.getItem('Authorization') != null) {
+        location.href = "/";
+    }
     const fncLogin = () => {
         const serializedFrmRegisterData = getFormDataJson("frmRegister");
 
@@ -45,11 +49,12 @@
         };
 
         const body = JSON.stringify(serializedFrmRegisterData);
-
+        const headersOption = "Authorization";
         mapleFetch(url, method, header, body,
             (response) => {
                 if (response.status == 200) {
-                    location.href = '/';
+                    localStorage.setItem("Authorization", response.headers.get("Authorization"));
+                    location.href = "/";
                     return;
                 }
                 alert('회원정보를 확인하세요.');
@@ -59,7 +64,7 @@
 
     const validationName = (to) => {
         if(to.length == 0) {
-            console.log('아이디를 입력하세요.');
+            alert('아이디를 입력하세요.');
             return false;
         }
 
@@ -68,16 +73,16 @@
 
     const validationPassword = (to) => {
         if(to.length == 0) {
-            console.log('패스워드를 입력하세요.');
+            alert('패스워드를 입력하세요.');
             return false;
         }
 
         if(to.length >= 20) {
-            console.log('20자리 미만 패스워드를 입력하세요.');
+            alert('20자리 미만 패스워드를 입력하세요.');
             return false;
         }
         if(to.length < 8) {
-            console.log('8자리 이상 패스워드를 입력하세요.');
+            alert('8자리 이상 패스워드를 입력하세요.');
             return false;
         }
 

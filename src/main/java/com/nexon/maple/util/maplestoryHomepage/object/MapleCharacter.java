@@ -1,4 +1,4 @@
-package com.nexon.maple.comm.maplestoryHomepage.object;
+package com.nexon.maple.util.maplestoryHomepage.object;
 
 import lombok.Builder;
 import lombok.Getter;

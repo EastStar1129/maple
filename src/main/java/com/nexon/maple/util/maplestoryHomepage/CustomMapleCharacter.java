@@ -1,10 +1,8 @@
-package com.nexon.maple.comm.maplestoryHomepage;
+package com.nexon.maple.util.maplestoryHomepage;
 
-import com.nexon.maple.comm.maplestoryHomepage.object.MapleCharacter;
+import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.time.LocalDateTime;
 
 public class CustomMapleCharacter {
     private static final String PREFIX_URL = "https://maplestory.nexon.com/Ranking/World/Total?w=0&c=";

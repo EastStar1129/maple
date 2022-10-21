@@ -1,8 +1,7 @@
 package com.nexon.maple.userInfo.entity;
 
 
-import com.nexon.maple.comm.Encryption.SHA256;
-import com.nexon.maple.otp.entity.Otp;
+import com.nexon.maple.util.Encryption.SHA256;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserInfoTest {
 
     @Test
-    public void 생성_테스트() {
+    public void 캐릭터명과_패스워드입력_패스워드가암호화되는지_테스트() {
         //given
         String name = "캐릭터";
         String password = "password";
@@ -27,7 +26,7 @@ class UserInfoTest {
          * */
         assertAll(
                 () -> assertEquals(name, userInfo.getName()),
-                () -> assertNotEquals(password, userInfo.getPassword())
+                () -> assertEquals(new SHA256().encrypt(password), userInfo.getPassword())
         );
     }
 

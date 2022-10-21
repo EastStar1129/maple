@@ -2,6 +2,7 @@ package com.nexon.maple.userInfo.controller;
 
 import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
 import com.nexon.maple.userInfo.dto.ResponseUserInfo;
+import com.nexon.maple.userInfo.service.RegisteUserInfoService;
 import com.nexon.maple.userInfo.service.UserInfoReadService;
 import com.nexon.maple.userInfo.service.UserInfoWriteService;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-    private final UserInfoWriteService userInfoWriteService;
+    private final RegisteUserInfoService registeUserInfoService;
     private final UserInfoReadService userInfoReadService;
 
     @PostMapping("/users")
     public ResponseEntity register(@RequestBody RegisterUserInfoCommand command) {
-        userInfoWriteService.register(command);
+        registeUserInfoService.regist(command);
 
         return ResponseEntity.ok().build();
     }

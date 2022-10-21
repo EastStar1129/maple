@@ -20,3 +20,9 @@ mybatis:
   type-aliases-package: com.nexon.maple.model
   mapper-locations: classpath:mybatis/**/*.xml
 
+jwt:
+  key: maabpcldeesftgohriyjkkely
+  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+  type: Bearer
+  header: Authorization
+

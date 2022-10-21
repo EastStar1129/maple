@@ -1,8 +1,10 @@
 package com.nexon.maple.otp.entity;
 
+import com.nexon.maple.userInfo.dto.UserName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.AssertTrue;
@@ -18,12 +20,12 @@ public class Otp {
     private String otpNumber;
     private LocalDateTime createdAt;
 
-    private static final int OTP_NUMBER_LENGTH = 8;
+    public static final int OTP_NUMBER_LENGTH = 8;
 
     @Builder
     public Otp(Long idx, String userName, String otpNumber, LocalDateTime createdAt) {
         this.idx = idx;
-        this.userName = Objects.requireNonNull(userName);
+        this.userName = new UserName(userName).getUserName();
         validateOtpNumber(otpNumber);
         this.otpNumber = otpNumber == null ? makeOtpNumber(OTP_NUMBER_LENGTH) : otpNumber;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;

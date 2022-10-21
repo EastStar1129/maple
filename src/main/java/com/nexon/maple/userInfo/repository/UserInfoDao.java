@@ -12,7 +12,7 @@ public interface UserInfoDao {
      */
     UserInfo find(Long id);
     UserInfo findByName(String name);
-    UserInfo findByNameByPassword(UserInfo userInfo);
+    UserInfo findByNameAndPassword(UserInfo userInfo);
 
     /*
         회원을 저장한다.

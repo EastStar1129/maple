@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 
 @RequiredArgsConstructor
 @Service
-public class OtpService {
+public class OtpWriteService {
     private final OtpDao otpDao;
 
     //otp 발급

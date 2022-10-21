@@ -13,22 +13,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class CommentService {
+public class CommentReadService {
     private final CommentDao commentDao;
-
-    public void saveComment(WriteComment writeComment) {
-        /*
-        * TODO userId 1L = 로그인 사용자의 ID를 넣어야된다
-        *
-        * */
-        CommentInfo commentInfo = CommentInfo.builder()
-                .characterId(writeComment.characterId())
-                .userId(1L)
-                .comment(writeComment.comment())
-                .build();
-
-        Assert.isTrue(commentDao.save(commentInfo) == 1, "댓글이 저장되지 않았습니다.");
-    }
 
     public List<ResponseCommentInfo> selectComment(String characterId) {
         List<CommentInfo> commentInfoList = commentDao.findByCharacterId(characterId);
