@@ -1,11 +1,9 @@
 package com.nexon.maple.config.security.filter;
 
-import com.nexon.maple.config.security.auth.PrincipalDetails;
 import com.nexon.maple.config.security.jwt.JwtToken;
-import com.nexon.maple.userInfo.entity.UserInfo;
-import com.nexon.maple.userInfo.repository.UserInfoDao;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -18,64 +16,103 @@ import java.util.Objects;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserInfoDao userInfoDao;
     private JwtToken jwtToken;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserInfoDao userInfoDao, JwtToken jwtToken) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken) {
         super(authenticationManager);
-        this.userInfoDao = userInfoDao;
         this.jwtToken = jwtToken;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String accessToken = request.getHeader(jwtToken.getHeader());
-        String refreshToken = null;
-        for(Cookie cookie: request.getCookies()) {
-            if(cookie.getName().equals(jwtToken.getHeader())) {
-                refreshToken = cookie.getValue();
-            }
-        }
+        String accessToken = getAccessToken(request);
+        String refreshToken = getRefreshToken(request);
 
-        if(Objects.nonNull(accessToken) || Objects.nonNull(refreshToken)) {
-            Authentication authentication = getAuthentication(response, accessToken, refreshToken);
-
-            if(Objects.nonNull(authentication)) {
-                this.getAuthenticationManager().authenticate(authentication);
-            }
-        }
+        authentication(response, accessToken, refreshToken);
         chain.doFilter(request, response);
     }
 
-    private Authentication getAuthentication(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
-        if(!jwtToken.validateToken(refreshToken)) {
-            if(!jwtToken.isExpired(refreshToken)) {
-                response.sendRedirect("/logout");
-                return null;
+    /*
+        ** AccessToken 존재하는 경우에만 로직 **
+        1. Refresh Token 존재 : 검증
+        2. Refresh Token 없음 : AccessToken 탈취 ( 로그아웃 )
+
+        없는 경우 = localStorage 값이 없음 = 로그아웃, Refresh 토큰 탈취
+     */
+    private void authentication(HttpServletResponse response, String accessToken, String refreshToken)
+            throws IOException {
+
+        if(Objects.isNull(accessToken)) {
+            if(Objects.nonNull(refreshToken)) {
+                removeRefreshToken(response);
             }
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ;
         }
 
-        if(!jwtToken.validateToken(accessToken)) {
-            if(!jwtToken.isExpired(accessToken)) {
-                response.sendRedirect("/logout");
-                return null;
-            }
-            String userName = jwtToken.getUserName(accessToken);
-            UserInfo userInfo = userInfoDao.findByName(userName);
-
-            PrincipalDetails principalDetails = new PrincipalDetails(userInfo);
-
-            response.addHeader(jwtToken.getHeader(),
-                    jwtToken.getType()+ " " + jwtToken.generateAccessToken(principalDetails));
-
-            Cookie RefreshTokenCookie =
-                    new Cookie(jwtToken.getHeader(), jwtToken.getType()+ " " + jwtToken.generateRefreshToken());
-            RefreshTokenCookie.setMaxAge(jwtToken.REFRESH_TOKEN_EXPIRE_TIME);
-            RefreshTokenCookie.setHttpOnly(true);
-            RefreshTokenCookie.setSecure(true);
+        if(Objects.isNull(refreshToken)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ;
         }
-        return jwtToken.getAuthentication(accessToken);
+
+        checkAuthentication(response, accessToken, refreshToken);
     }
 
+    private void removeRefreshToken(HttpServletResponse response) {
+        Cookie cookie = new Cookie(jwtToken.getHeader(), "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    private String getRefreshToken(HttpServletRequest request) {
+        if(Objects.isNull(request.getCookies())) {
+            return null;
+        }
+
+        for(Cookie cookie: request.getCookies()) {
+            if(cookie.getName().equals(jwtToken.getHeader())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    private String getAccessToken(HttpServletRequest request) {
+        String accessToken = request.getHeader(jwtToken.getHeader());
+        if(Objects.isNull(accessToken)) {
+            return null;
+        }
+
+        return jwtToken.typeRemove(accessToken);
+    }
+
+    private void checkAuthentication(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        if(Objects.nonNull(response.getHeader("x-token"))) {
+            response.setHeader("x-token", "");
+            return ;
+        }
+
+        if(jwtToken.validateToken(accessToken)) {
+            SecurityContextHolder.getContext().setAuthentication(jwtToken.getAuthentication(accessToken));
+            return ;
+        }
+
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        if(!jwtToken.isExpired(accessToken)) {
+            return ;
+        }
+
+        //1. accessToken 만료
+        //2. refreshToken 검증완료
+        if(jwtToken.validateToken(refreshToken)) {
+            response.setHeader("x-token", "true");
+            return ;
+        }
+
+        // refreshToken 검증실패
+        removeRefreshToken(response);
+        return ;
+    }
 }
