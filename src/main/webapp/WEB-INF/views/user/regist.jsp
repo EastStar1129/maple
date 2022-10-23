@@ -6,9 +6,13 @@
 <html lang="ko">
 <head>
     <title>회원가입</title>
-    <link rel="shortcut icon" href="/resources/favicon.ico"/>
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
 </head>
+    <script>
+        if(localStorage.getItem('Authorization') != null) {
+            location.href = "/";
+        }
+    </script>
 <body>
 
 <div class="container">
@@ -58,11 +62,7 @@
 </body>
 
 <script>
-    if(localStorage.getItem('Authorization') != null) {
-        location.href = "/";
-    }
-
-    const fncCreateOtp = () => {
+    const fncCreateOtp = async () => {
         const nameValue = document.getElementById('name').value;
 
         if(!validationName(nameValue)) {
@@ -72,21 +72,20 @@
         const url = "/"+nameValue+"/otps";
         const method = METHOD_TYPE.POST;
 
-        mapleFetch(url, method, {}, null,
-            (response) => {
-                if(response.status !== 200){
-                    alert('아이디를 확인해주세요.');
-                    return;
-                }
-                response.text().then((value) => {
-                    document.getElementById('otpNumber').value = value;
-                    alert('OTP 번호가 발급되었습니다.');
-                })
-            }
-        );
+        const response = await mapleFetchAsync(url, method, {}, null);
+
+        if(response.status != 200){
+            alert('아이디를 확인해주세요.');
+            return;
+        }
+
+        response.text().then((value) => {
+            document.getElementById('otpNumber').value = value;
+            alert('OTP 번호가 발급되었습니다.');
+        })
     }
 
-    const fncRegist = () => {
+    const fncRegist = async () => {
         let serializedFrmRegisterData = getFormDataJson("frmRegister");
         serializedFrmRegisterData.terms = getTermsCheckbox();
 
@@ -102,14 +101,12 @@
         };
         const body = JSON.stringify(serializedFrmRegisterData);
 
-        mapleFetch(url, method, header, body,
-            (response) => {
-                if (response.status == 200) {
-                    alert('회원가입이 완료되었습니다. 로그인해주세요.');
-                    location.href = '/user/login';
-                }
-            }
-        );
+        const response = await mapleFetchAsync(url, method, header, body);
+
+        if (response.status == 200) {
+            alert('회원가입이 완료되었습니다. 로그인해주세요.');
+            location.href = '/user/login';
+        }
     }
 
     const validationRegist = (serializedFrmRegisterData) => {
@@ -156,7 +153,7 @@
     const validationName = (to) => {
         const MIN = 2;
         const MAX = 10;
-        if(to.length === 0) {
+        if(to.length == 0) {
             alert('아이디를 입력하세요.');
             return false;
         }

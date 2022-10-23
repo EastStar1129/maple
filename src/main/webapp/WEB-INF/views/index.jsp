@@ -4,6 +4,10 @@
 
 <!DOCTYPE html>
 <html lang="ko">
+<head>
+    <title>메이플댓글</title>
+    <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
+</head>
 <body>
 
 <div class="container">
