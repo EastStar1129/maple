@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RequiredArgsConstructor
 @RestController
 public class CommentController {
@@ -20,8 +22,8 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity saveComment(@RequestBody WriteComment writeComment) {
-        commentWriteService.saveComment(writeComment);
+    public ResponseEntity saveComment(Principal principal, @RequestBody WriteComment writeComment) {
+        commentWriteService.saveComment(principal, writeComment);
         return ResponseEntity.ok().build();
     }
 }

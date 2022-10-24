@@ -154,15 +154,13 @@
 
         const response = await mapleFetchAsync(url, method, header, body);
 
-        response.
-            then(() => {
-            loading = false;
-            if (response.status == 200) {
-                alert('댓글이 등록되었습니다.');
-                document.getElementById('comment').value = "";
-                selectComments();
-            }
-        });
+        if (response.status == 200) {
+            alert('댓글이 등록되었습니다.');
+            document.getElementById('comment').value = "";
+            selectComments();
+        } else {
+            alert('댓글이 등록되지 않았습니다.');
+        }
     }
 
     const selectComments = async () => {

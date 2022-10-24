@@ -3,22 +3,26 @@ package com.nexon.maple.comment.service;
 import com.nexon.maple.comment.dto.WriteComment;
 import com.nexon.maple.comment.entity.CommentInfo;
 import com.nexon.maple.comment.repository.CommentDao;
+import com.nexon.maple.userInfo.dto.ResponseUserInfo;
+import com.nexon.maple.userInfo.service.UserInfoReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @Service
 public class CommentWriteService {
     private final CommentDao commentDao;
-    public void saveComment(WriteComment writeComment) {
-        /*
-         * TODO userId 1L = 로그인 사용자의 ID를 넣어야된다
-         *
-         * */
+    private final UserInfoReadService userInfoReadService;
+
+    public void saveComment(Principal principal, WriteComment writeComment) {
+        ResponseUserInfo userInfo = userInfoReadService.selectUserInfo(principal.getName());
+
         CommentInfo commentInfo = CommentInfo.builder()
                 .characterId(writeComment.characterId())
-                .userId(1L)
+                .userId(userInfo.id())
                 .comment(writeComment.comment())
                 .build();
 

@@ -32,7 +32,7 @@ public class JwtToken {
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.grade}")
-    private String key;
+    private String grade;
     @Value("${jwt.type}")
     private String type;
     @Value("${jwt.header}")
@@ -64,7 +64,7 @@ public class JwtToken {
         // Access Token 생성
         return Jwts.builder()
                 .setSubject(principalDetails.getUsername())
-                .claim(key, authorities)
+                .claim(grade, authorities)
                 .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(hashKey, SignatureAlgorithm.HS256)
                 .compact();
@@ -86,7 +86,7 @@ public class JwtToken {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get(key) == null) {
+        if (claims.get(grade) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
         return claims.getSubject();
@@ -97,14 +97,14 @@ public class JwtToken {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get(key) == null) {
+        if (claims.get(grade) == null) {
             throw new BadCredentialsException("자격 증명에 실패했습니다.");
         }
 
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(key).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
+                Arrays.stream(claims.get(grade).toString().split(","))
+                        .map((data) -> new SimpleGrantedAuthority("ROLE_" + data))
                         .collect(Collectors.toList());
 
         if(Objects.isNull(claims.getSubject()) || Objects.isNull(authorities) ) {
