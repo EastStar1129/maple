@@ -63,8 +63,9 @@ const mapleFetchAsync = async (url, method, headers, body) => {
     }
 
     const response = await fetch(url, fetchConfig);
-    if (response.status == 401 && response.headers.get("x-token") == 'true') {
-
+    if (response.status == 401 && response.headers.get("X-Token") == 'true') {
+        await reissue();
+        fetchConfig.headers.authorization = localStorage.getItem("Authorization");
         return await fetch(url, fetchConfig);
     }
     return response;
@@ -121,9 +122,13 @@ const effectiveToken = async () => {
             return;
         }
 
-        if (response.headers.get("Authorization") != null) {
-            localStorage.setItem("Authorization", response.headers.get("Authorization"));
-            return;
+        if (response.status == 401 && response.headers.get("X-Token") == 'true') {
+            await reissue();
+            fetchConfig.headers.authorization = localStorage.getItem("Authorization");
+            const response2 = await fetch(url, fetchConfig);
+            if (response2.status == 200) {
+                return;
+            }
         }
 
         localStorage.removeItem("Authorization");
@@ -145,6 +150,7 @@ const reissue = async () => {
         const response = await fetch(url, fetchConfig);
         if (response.headers.get("Authorization") == null) {
             alert("token 재발급에 실패했습니다.");
+            throw 'token reissue error';
             return;
         }
         localStorage.setItem("Authorization", response.headers.get("Authorization"));

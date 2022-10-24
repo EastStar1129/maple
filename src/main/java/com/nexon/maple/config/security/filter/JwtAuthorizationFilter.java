@@ -89,8 +89,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private void checkAuthentication(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
-        if(Objects.nonNull(response.getHeader("x-token"))) {
-            response.setHeader("x-token", "");
+        if(Objects.nonNull(response.getHeader("X-Token"))) {
+            response.setHeader("X-Token", "");
             return ;
         }
 
@@ -107,7 +107,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         //1. accessToken 만료
         //2. refreshToken 검증완료
         if(jwtToken.validateToken(refreshToken)) {
-            response.setHeader("x-token", "true");
+            response.setHeader("X-Token", "true");
             return ;
         }
 

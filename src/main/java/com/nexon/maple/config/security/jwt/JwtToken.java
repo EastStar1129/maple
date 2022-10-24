@@ -40,7 +40,7 @@ public class JwtToken {
 
     private Key hashKey;
 
-    public static final int ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;              // 30분
+    public static final int ACCESS_TOKEN_EXPIRE_TIME = 1 * 30 * 1000;              // 30분
     public static final int REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;    // 7일 ( 1주일 )
 
     private void initHashKey() {

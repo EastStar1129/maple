@@ -27,7 +27,7 @@ public class LoginController {
 
     @GetMapping("/reissue")
     public ResponseEntity reissue(HttpServletResponse response, HttpServletRequest request) {
-        if(response.getHeader("x-token").equals("true")) {
+        if(response.getHeader("X-Token").equals("true")) {
             String accessToken = jwtToken.typeRemove(request.getHeader(jwtToken.getHeader()));
             String userName = jwtToken.getUserName(accessToken);
 
