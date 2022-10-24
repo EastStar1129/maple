@@ -29,7 +29,7 @@ public class UserInfo {
         this.name = new UserName(name).getUserName();
         this.password = password;
 
-        this.gradeCode = gradeCode == null ? GradeCode.USER.getTitle() : gradeCode;
+        this.gradeCode = gradeCode == null ? GradeCode.ROLE_USER.getTitle() : gradeCode;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 

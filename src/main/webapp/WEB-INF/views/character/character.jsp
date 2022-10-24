@@ -6,8 +6,8 @@
 <html lang="ko">
 <head>
     <title>캐릭터조회</title>
-    <link rel="shortcut icon" href="/resources/favicon.ico"/>
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
+    <script type="text/javascript" src="/resources/js/comm/token.js"></script>
     <style>
         #character_area > div{
             display: none;
@@ -51,12 +51,12 @@
             <div id="guildName"></div>
         </div>
         <div class="inactive">
-            <div id="comment_area" class="inactive">
+            <div id="comment_area" class="active">
                 <h1>comment</h1>
-                <div class="active">
+                <div class="inactive">
                     댓글작성은 로그인이 필요합니다.
                 </div>
-                <div class="inactive">
+                <div class="active">
                     <form id="frmComment">
                         <input type="hidden" id="userId" name="userId" value="1">
                         <input type="hidden" id="characterId" name="characterId">
@@ -109,7 +109,7 @@
                 document.getElementById('level').innerHTML = data.level;
                 document.getElementById('experience').innerHTML = threeComma(data.experience);
                 document.getElementById('popularity').innerHTML = threeComma(data.popularity);
-                document.getElementById('guildName').innerHTML = data.guildName===null?'-':data.guildName;
+                document.getElementById('guildName').innerHTML = data.guildName==null?'-':data.guildName;
                 selectComments();
             })
             .catch((err) => {
@@ -119,8 +119,9 @@
     }
 
     const validateCharacterURI = () => {
+
         const lastSegment = getURILastSegment();
-        if(lastSegment === null || lastSegment === 'character') {
+        if(lastSegment == null || lastSegment == 'character') {
             return;
         }
         selectUserInfo(lastSegment);
@@ -136,9 +137,9 @@
         return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    const writeComment = () => {
+    const writeComment = async () => {
 
-        if(document.getElementById('comment').value === "") {
+        if(document.getElementById('comment').value == "") {
             alert('댓글을 입력해주세요.');
             document.getElementById('comment').focus();
             return;
@@ -151,21 +152,20 @@
         };
         const body = JSON.stringify(getFormDataJson("frmComment"));
 
-        mapleFetch(url, method, header, body,
-            (response) => {
-                loading = false;
-                if (response.status == 200) {
-                    alert('댓글이 등록되었습니다.');
-                    document.getElementById('comment').value = "";
-                    selectComments();
-                }
-            }
-        );
+        const response = await mapleFetchAsync(url, method, header, body);
+
+        if (response.status == 200) {
+            alert('댓글이 등록되었습니다.');
+            document.getElementById('comment').value = "";
+            selectComments();
+        } else {
+            alert('댓글이 등록되지 않았습니다.');
+        }
     }
 
-    const selectComments = () => {
+    const selectComments = async () => {
         const id = document.getElementById('characterId').value;
-        if(id === null || id.length === 0) {
+        if(id == null || id.length == 0) {
             return;
         }
 
@@ -178,7 +178,7 @@
         mapleFetch(url, method, header, null,
             (response) => response.json().then((list) => {
                 document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
-                if(list.length === 0) {
+                if(list.length == 0) {
                     return;
                 }
 
@@ -201,7 +201,26 @@
             })
         );
     }
+
+    const initCommentWriteBlind = () => {
+        const element = document.getElementById('comment_area');
+        if(!isLogin()) {
+            element.className = 'inactive';
+            return ;
+        }
+
+        //block
+        if(isBlind()) {
+            element.className = 'inactive';
+            element.querySelector('.inactive').innerText = "차단된 유저입니다.";
+            return ;
+        }
+
+        document.getElementById('comment_area').className = 'active';
+    }
+
     const documentOnload = () => {
+        initCommentWriteBlind();
         validateCharacterURI();
     }
 

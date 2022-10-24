@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum GradeCode {
-    ADMIN("0"),
-    USER("1"),
-    BLOCK("2");
+    ROLE_ADMIN("R"),
+    ROLE_USER("1"),
+    ROLE_BLOCK("2");
 
     @Getter
     private final String title;

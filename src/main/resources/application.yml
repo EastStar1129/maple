@@ -21,8 +21,8 @@ mybatis:
   mapper-locations: classpath:mybatis/**/*.xml
 
 jwt:
-  key: maabpcldeesftgohriyjkkely
+  grade: grade
   secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
-  type: Bearer
+  type: bearer
   header: Authorization
 

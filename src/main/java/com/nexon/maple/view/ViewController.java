@@ -3,9 +3,11 @@ package com.nexon.maple.view;
 import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.view.service.ViewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,8 +19,9 @@ public class ViewController {
     private final JwtToken jwtToken;
 
     @GetMapping("/favicon.ico")
-    public String favicon() {
-        return "/favicon.ico";
+    @ResponseBody
+    public ResponseEntity<Object> favicon() {
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = {"/", "/index"})
@@ -27,7 +30,7 @@ public class ViewController {
     }
 
     @GetMapping(value = {"/character", "/character/{userName}"})
-    public String character(){
+    public String characterId(){
         return "character/character";
     }
 

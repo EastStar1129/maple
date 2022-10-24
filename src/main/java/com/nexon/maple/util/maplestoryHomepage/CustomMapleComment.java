@@ -4,6 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class CustomMapleComment implements otpComment{
     private static final String PREFIX_URL = "https://maplestory.nexon.com/Community/Free/326252/comment?page=";
@@ -58,10 +59,6 @@ public class CustomMapleComment implements otpComment{
     public boolean equalsComment(String otpNumber) {
         String otpComment = commentMap.get("comment_content");
 
-        if(otpNumber.equals(otpComment)) {
-            return true;
-        }
-
-        return false;
+        return Objects.nonNull(otpComment) && otpNumber.equals(otpNumber);
     }
 }

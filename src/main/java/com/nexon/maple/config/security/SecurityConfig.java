@@ -5,7 +5,6 @@ import com.nexon.maple.config.security.filter.JwtAuthenticationFilter;
 import com.nexon.maple.config.security.filter.JwtAuthorizationFilter;
 import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.userInfo.entity.GradeCode;
-import com.nexon.maple.userInfo.repository.UserInfoDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,13 +26,15 @@ public class SecurityConfig{
 
     private final CorsFilter corsFilter;
     private final AuthEntryPointJwt authEntryPointJwt;
-    private final UserInfoDao userInfoDao;
     private final JwtToken jwtToken;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .antMatchers("/favicon.ico", "/logout", "/character", "/character/**", "/user/regist", "/user/login");
+                .antMatchers("/resources/js/**", "/resources/css/**", "/resources/image/**",
+                        "/favicon.ico", "/", "/index",
+                        "/character", "/character/**",
+                        "/user/regist", "/user/login");
     }
 
     @Bean
@@ -54,11 +55,16 @@ public class SecurityConfig{
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true).deleteCookies(jwtToken.getHeader())
+            .and()
                 .authorizeRequests()
                 .antMatchers("/user/info")
                     .authenticated()
                 .antMatchers(HttpMethod.POST, "/comments")
-                    .access(rolesToString(GradeCode.USER.getTitle(), GradeCode.USER.getTitle()))
+                    .access(rolesToString(GradeCode.ROLE_ADMIN.getTitle(), GradeCode.ROLE_USER.getTitle()))
             .and()
                 .apply(new MyCustomDsl())
             .and()
@@ -82,7 +88,7 @@ public class SecurityConfig{
                     .addFilter(corsFilter)
                     .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtToken),
                             UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userInfoDao, jwtToken),
+                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, jwtToken),
                             UsernamePasswordAuthenticationFilter.class);
         }
     }
