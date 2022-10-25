@@ -2,9 +2,7 @@ package com.nexon.maple.character.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class ResponseCharacterInfo {
     Long id;

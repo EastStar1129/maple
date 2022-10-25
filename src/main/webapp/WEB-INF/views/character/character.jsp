@@ -97,19 +97,27 @@
         response
             .json()
             .then((data) => {
+                if(data[RESPONSE_KEY.CODE] != RESPONSE_KEY.CODE_TYPE.SUCCESS) {
+                    alert(data[RESPONSE_KEY.MESSAGE]);
+                    return ;
+                }
+
+                document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
+                let info = data[RESPONSE_KEY.DATA];
+
                 document.getElementById('character_area').className = 'inactive';
 
-                document.getElementById('image').src = data.image;
-                document.getElementById('characterId').value = data.id;
-                document.getElementById('rank').innerHTML = threeComma(data.rank);
-                document.getElementById('rankMove').innerHTML = threeComma(data.rankMove);
-                document.getElementById('userName').innerHTML = data.userName;
-                document.getElementById('job1').innerHTML = data.job1;
-                document.getElementById('job2').innerHTML = data.job2;
-                document.getElementById('level').innerHTML = data.level;
-                document.getElementById('experience').innerHTML = threeComma(data.experience);
-                document.getElementById('popularity').innerHTML = threeComma(data.popularity);
-                document.getElementById('guildName').innerHTML = data.guildName==null?'-':data.guildName;
+                document.getElementById('image').src = info.image;
+                document.getElementById('characterId').value = info.id;
+                document.getElementById('rank').innerHTML = threeComma(info.rank);
+                document.getElementById('rankMove').innerHTML = threeComma(info.rankMove);
+                document.getElementById('userName').innerHTML = info.userName;
+                document.getElementById('job1').innerHTML = info.job1;
+                document.getElementById('job2').innerHTML = info.job2;
+                document.getElementById('level').innerHTML = info.level;
+                document.getElementById('experience').innerHTML = threeComma(info.experience);
+                document.getElementById('popularity').innerHTML = threeComma(info.popularity);
+                document.getElementById('guildName').innerHTML = info.guildName==null?'-':info.guildName;
                 selectComments();
             })
             .catch((err) => {
@@ -163,7 +171,7 @@
         }
     }
 
-    const selectComments = async () => {
+    const selectComments = () => {
         const id = document.getElementById('characterId').value;
         if(id == null || id.length == 0) {
             return;
@@ -177,11 +185,6 @@
 
         mapleFetch(url, method, header, null,
             (response) => response.json().then((list) => {
-                document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
-                if(list.length == 0) {
-                    return;
-                }
-
                 /**
                  * TODO
                  * id
@@ -196,7 +199,6 @@
                     let element = document.createElement('div');
                     element.innerHTML = JSON.stringify(value);
                     commentList.appendChild(element);
-                    console.log(value);
                 }
             })
         );

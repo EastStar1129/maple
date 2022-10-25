@@ -4,7 +4,6 @@ import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
 import com.nexon.maple.userInfo.dto.ResponseUserInfo;
 import com.nexon.maple.userInfo.service.RegisteUserInfoService;
 import com.nexon.maple.userInfo.service.UserInfoReadService;
-import com.nexon.maple.userInfo.service.UserInfoWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +24,5 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<ResponseUserInfo> selectUserInfo(@PathVariable Long id) {
         return ResponseEntity.ok().body(userInfoReadService.selectUserInfo(id));
-    }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<String> handleIllegalArgumentException(Exception ex) {
-        return ResponseEntity.unprocessableEntity().build();
     }
 }

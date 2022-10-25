@@ -6,6 +6,16 @@ const METHOD_TYPE = {
     DELETE : "DELETE"
 };
 
+const RESPONSE_KEY = {
+    CODE: 'code',
+    CODE_TYPE: {
+        SUCCESS: 'SUCCESS',
+        FAIL: 'FAIL'
+    },
+    MESSAGE: 'message',
+    DATA: 'data'
+};
+
 // FormData to serialize
 // 인증이 필요하지않은 경우
 let loading = false;
@@ -14,25 +24,22 @@ const mapleFetch = (url, method, headers, body, function1) => {
         console.log("작업이 진행중입니다.");
         return;
     }
-    loading = true;
-    let fetchConfig = {};
 
     if(url == null || method == null) {
         return;
     }
-    fetchConfig.method = method;
 
-    if(headers != null) {
-        fetchConfig.headers = headers;
-    }
+    loading = true;
+
+    let fetchConfig = {
+        method: method,
+        headers: headers,
+        body: body
+    };
 
     let authorization = localStorage.getItem("Authorization")
     if(authorization != null) {
         fetchConfig.headers.authorization = authorization;
-    }
-
-    if(body != null) {
-        fetchConfig.body = body;
     }
 
     fetch(url, fetchConfig)
@@ -41,25 +48,19 @@ const mapleFetch = (url, method, headers, body, function1) => {
 }
 
 const mapleFetchAsync = async (url, method, headers, body) => {
-
     if(url == null || method == null) {
         return;
     }
 
-    let fetchConfig = {};
-
-    fetchConfig.method = method;
-    if(headers != null) {
-        fetchConfig.headers = headers;
-    }
+    let fetchConfig = {
+        method: method,
+        headers: headers,
+        body: body
+    };
 
     let authorization = localStorage.getItem("Authorization")
     if(authorization != null) {
         fetchConfig.headers.authorization = authorization;
-    }
-
-    if(body != null) {
-        fetchConfig.body = body;
     }
 
     const response = await fetch(url, fetchConfig);
