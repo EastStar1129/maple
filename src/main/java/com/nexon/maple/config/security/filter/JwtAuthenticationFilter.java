@@ -3,10 +3,11 @@ package com.nexon.maple.config.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexon.maple.config.security.auth.PrincipalDetails;
 import com.nexon.maple.config.security.jwt.JwtToken;
+import com.nexon.maple.login.service.LoginService;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
 import com.nexon.maple.userInfo.entity.UserInfo;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,54 +47,47 @@ import java.nio.charset.StandardCharsets;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtToken jwtToken;
+    private final LoginService loginService;
 
     private static final String LOGIN_URL = "/login";
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken, LoginService loginService) {
+        this.loginService = loginService;
         setFilterProcessesUrl(LOGIN_URL);
         this.authenticationManager = authenticationManager;
         this.jwtToken = jwtToken;
     }
 
+    @SneakyThrows
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         ObjectMapper om = new ObjectMapper();
         RegisterUserInfoCommand command;
 
-        try {
-            command = om.readValue(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8),
-                    RegisterUserInfoCommand.class);
+        command = om.readValue(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8),
+                RegisterUserInfoCommand.class);
 
-            UserInfo userInfo = UserInfo.builder()
-                    .name(command.name())
-                    .password(command.password())
-                    .build();
+        UserInfo userInfo = UserInfo.builder()
+                .name(command.name())
+                .password(command.password())
+                .build();
 
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userInfo.getName(), userInfo.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userInfo.getName(), userInfo.getPassword());
 
-            return authenticationManager.authenticate(authenticationToken);
-        } catch (Exception e) {
-            new BadCredentialsException("자격증명 실패 " + e.getMessage());
-        }
-        return null;
+        return authenticationManager.authenticate(authenticationToken);
+    }
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        loginService.addHeaderToken(response, principalDetails);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-
-        response.addHeader(jwtToken.getHeader(),
-                jwtToken.getType()+ " " + jwtToken.generateAccessToken(principalDetails));
-
-        Cookie RefreshTokenCookie = new Cookie(jwtToken.getHeader(), jwtToken.generateRefreshToken());
-        RefreshTokenCookie.setMaxAge(jwtToken.REFRESH_TOKEN_EXPIRE_TIME);
-        RefreshTokenCookie.setHttpOnly(true);
-        RefreshTokenCookie.setSecure(true);
-        response.addCookie(RefreshTokenCookie);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        super.unsuccessfulAuthentication(request, response, failed);
     }
 }

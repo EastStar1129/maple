@@ -1,6 +1,7 @@
 package com.nexon.maple.config.security.filter;
 
 import com.nexon.maple.config.security.jwt.JwtToken;
+import com.nexon.maple.login.service.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,18 +17,22 @@ import java.util.Objects;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
+    private final AuthenticationManager authenticationManager;
     private JwtToken jwtToken;
+    private final LoginService loginService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtToken jwtToken, LoginService loginService) {
         super(authenticationManager);
+        this.authenticationManager = authenticationManager;
         this.jwtToken = jwtToken;
+        this.loginService = loginService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String accessToken = getAccessToken(request);
-        String refreshToken = getRefreshToken(request);
+        String accessToken = getToken(request, jwtToken.getAccessTokenName());
+        String refreshToken = getToken(request, jwtToken.getRefreshTokenName());
 
         authentication(response, accessToken, refreshToken);
         chain.doFilter(request, response);
@@ -45,33 +50,39 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if(Objects.isNull(accessToken)) {
             if(Objects.nonNull(refreshToken)) {
-                removeRefreshToken(response);
+                removeToken(response);
             }
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return ;
         }
 
         if(Objects.isNull(refreshToken)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            removeToken(response);
             return ;
         }
 
         checkAuthentication(response, accessToken, refreshToken);
     }
 
-    private void removeRefreshToken(HttpServletResponse response) {
-        Cookie cookie = new Cookie(jwtToken.getHeader(), "");
+    private void removeToken(HttpServletResponse response) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        Cookie cookie = new Cookie(jwtToken.getAccessTokenName(), "");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+        Cookie cookie2 = new Cookie(jwtToken.getRefreshTokenName(), "");
+        cookie2.setMaxAge(0);
+        response.addCookie(cookie2);
+        Cookie cookie3 = new Cookie(jwtToken.getTokenFlagName(), "");
+        cookie3.setMaxAge(0);
+        response.addCookie(cookie3);
     }
 
-    private String getRefreshToken(HttpServletRequest request) {
+    private String getToken(HttpServletRequest request, String tokeName) {
         if(Objects.isNull(request.getCookies())) {
             return null;
         }
 
         for(Cookie cookie: request.getCookies()) {
-            if(cookie.getName().equals(jwtToken.getHeader())) {
+            if(cookie.getName().equals(tokeName)) {
                 return cookie.getValue();
             }
         }
@@ -79,40 +90,25 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    private String getAccessToken(HttpServletRequest request) {
-        String accessToken = request.getHeader(jwtToken.getHeader());
-        if(Objects.isNull(accessToken)) {
-            return null;
-        }
-
-        return jwtToken.typeRemove(accessToken);
-    }
-
     private void checkAuthentication(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
-        if(Objects.nonNull(response.getHeader("X-Token"))) {
-            response.setHeader("X-Token", "");
-            return ;
-        }
-
         if(jwtToken.validateToken(accessToken)) {
             SecurityContextHolder.getContext().setAuthentication(jwtToken.getAuthentication(accessToken));
             return ;
         }
-
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         if(!jwtToken.isExpired(accessToken)) {
+            removeToken(response);
             return ;
         }
 
         //1. accessToken 만료
-        //2. refreshToken 검증완료
-        if(jwtToken.validateToken(refreshToken)) {
-            response.setHeader("X-Token", "true");
+        //2. refreshToken 검증실패
+        if(!jwtToken.validateToken(refreshToken)) {
+            removeToken(response);
             return ;
         }
 
-        // refreshToken 검증실패
-        removeRefreshToken(response);
-        return ;
+        //2. refreshToken 검증완료
+        String userName = jwtToken.getUserName(accessToken);
+        loginService.addHeaderToken(response, userName);
     }
 }

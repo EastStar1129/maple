@@ -24,5 +24,7 @@ jwt:
   grade: grade
   secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
   type: bearer
-  header: Authorization
+  refreshTokenName: _ret
+  accessTokenName: _act
+  flagTokenName: _inf
 
