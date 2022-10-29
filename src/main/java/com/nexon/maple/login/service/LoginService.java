@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Service
@@ -46,7 +47,7 @@ public class LoginService {
         Cookie flagCookie = new Cookie(jwtToken.getTokenFlagName(), jwtToken.getExpiration(accessToken));
         response.addCookie(flagCookie);
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(ResponseDTO.ofSuccess()));
+        response.getOutputStream().write(new ObjectMapper().writeValueAsString(ResponseDTO.ofSuccess()).getBytes(StandardCharsets.UTF_8));
     }
 
     public void addHeaderToken(HttpServletResponse response, String userName) throws IOException {

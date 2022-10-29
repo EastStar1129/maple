@@ -64,8 +64,6 @@ public class JwtToken {
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        System.out.println(new Date());
-        System.out.println(new Date(now + ACCESS_TOKEN_EXPIRE_TIME));
 
         // Access Token 생성
         return Jwts.builder()
