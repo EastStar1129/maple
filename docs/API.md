@@ -6,9 +6,7 @@
 | MESSAGE  | String  | 메세지                             |
 | DATA     | Json    | 추가 데이터                          |
 
-
-#### Header
-Authentication : Access 토큰
-
 #### Cookies
-Authentication : Refresh 토큰
+_ret : Refresh 토큰
+_act : Access 토큰
+_inf : PayLoad 
