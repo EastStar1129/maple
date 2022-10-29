@@ -1,28 +1,23 @@
 package com.nexon.maple.userInfo.controller;
 
+import com.nexon.maple.config.dto.ResponseDTO;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
-import com.nexon.maple.userInfo.dto.ResponseUserInfo;
 import com.nexon.maple.userInfo.service.RegisteUserInfoService;
-import com.nexon.maple.userInfo.service.UserInfoReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
     private final RegisteUserInfoService registeUserInfoService;
-    private final UserInfoReadService userInfoReadService;
 
     @PostMapping("/users")
-    public ResponseEntity register(@RequestBody RegisterUserInfoCommand command) {
+    public ResponseEntity<ResponseDTO> register(@RequestBody RegisterUserInfoCommand command) {
         registeUserInfoService.regist(command);
 
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/users/{id}")
-    public ResponseEntity<ResponseUserInfo> selectUserInfo(@PathVariable Long id) {
-        return ResponseEntity.ok().body(userInfoReadService.selectUserInfo(id));
+        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("회원가입이 완료되었습니다. 로그인해주세요.", null));
     }
 }

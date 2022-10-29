@@ -24,7 +24,7 @@ public class OtpWriteService {
 
     private void saveOtp(Otp otp) {
         int saveResult = otpDao.save(otp);
-        Assert.isTrue(saveResult == 1, "OTP발급 에러");
+        Assert.isTrue(saveResult == 1, "OTP 발급 에러");
     }
 
 }

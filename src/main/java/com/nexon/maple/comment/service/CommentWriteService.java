@@ -20,13 +20,8 @@ public class CommentWriteService {
     public void saveComment(Principal principal, WriteComment writeComment) {
         ResponseUserInfo userInfo = userInfoReadService.selectUserInfo(principal.getName());
 
-        CommentInfo commentInfo = CommentInfo.builder()
-                .characterId(writeComment.characterId())
-                .userId(userInfo.id())
-                .comment(writeComment.comment())
-                .build();
+        CommentInfo commentInfo = CommentInfo.of(writeComment, userInfo);
 
         Assert.isTrue(commentDao.save(commentInfo) == 1, "댓글이 저장되지 않았습니다.");
     }
-
 }

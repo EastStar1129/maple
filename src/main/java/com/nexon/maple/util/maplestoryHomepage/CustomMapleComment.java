@@ -59,6 +59,6 @@ public class CustomMapleComment implements otpComment{
     public boolean equalsComment(String otpNumber) {
         String otpComment = commentMap.get("comment_content");
 
-        return Objects.nonNull(otpComment) && otpNumber.equals(otpNumber);
+        return Objects.nonNull(otpComment) && otpComment.equals(otpNumber);
     }
 }

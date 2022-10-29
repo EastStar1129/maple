@@ -44,6 +44,4 @@ public class ViewController {
     public String login(HttpServletRequest request){
         return "user/login";
     }
-
-
 }

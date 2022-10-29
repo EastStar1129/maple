@@ -33,6 +33,21 @@ public class LoginService {
      */
 
     public void addHeaderToken(HttpServletResponse response, PrincipalDetails principalDetails) throws IOException {
+        setHeaderToken(response, principalDetails);
+        response
+                .getOutputStream()
+                .write(new ObjectMapper()
+                        .writeValueAsString(ResponseDTO.ofSuccess())
+                        .getBytes(StandardCharsets.UTF_8)
+                );
+    }
+
+    public void addHeaderToken(HttpServletResponse response, String userName) throws IOException {
+        UserInfo userInfo = userInfoDao.findByName(userName);
+        setHeaderToken(response, new PrincipalDetails(userInfo));
+    }
+
+    private void setHeaderToken(HttpServletResponse response, PrincipalDetails principalDetails) throws IOException {
         String accessToken = jwtToken.generateAccessToken(principalDetails);
         Cookie accessTokenCookie = new Cookie(jwtToken.getAccessTokenName(), accessToken);
         accessTokenCookie.setHttpOnly(true);
@@ -44,14 +59,7 @@ public class LoginService {
         refreshTokenCookie.setSecure(true);
         response.addCookie(refreshTokenCookie);
 
-        Cookie flagCookie = new Cookie(jwtToken.getTokenFlagName(), jwtToken.getExpiration(accessToken));
+        Cookie flagCookie = new Cookie(jwtToken.getTokenFlagName(), accessToken.split("\\.")[1]);
         response.addCookie(flagCookie);
-
-        response.getOutputStream().write(new ObjectMapper().writeValueAsString(ResponseDTO.ofSuccess()).getBytes(StandardCharsets.UTF_8));
-    }
-
-    public void addHeaderToken(HttpServletResponse response, String userName) throws IOException {
-        UserInfo userInfo = userInfoDao.findByName(userName);
-        addHeaderToken(response, new PrincipalDetails(userInfo));
     }
 }

@@ -14,7 +14,7 @@ public class CharacterInfoController {
     private final SelectCharacterInfoService selectCharacterInfoService;
 
     @GetMapping("/{userName}/character")
-    public ResponseEntity selectCharacter(@PathVariable("userName")String userName) {
+    public ResponseEntity<ResponseDTO> selectCharacter(@PathVariable("userName")String userName) {
         var body = selectCharacterInfoService.select(userName);
         return ResponseEntity.ok().body(ResponseDTO.ofSuccess("조회가 완료되었습니다.", body));
     }

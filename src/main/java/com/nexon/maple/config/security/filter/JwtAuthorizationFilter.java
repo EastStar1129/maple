@@ -108,6 +108,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         //2. refreshToken 검증완료
+        // >>> 재발급
         String userName = jwtToken.getUserName(accessToken);
         loginService.addHeaderToken(response, userName);
     }

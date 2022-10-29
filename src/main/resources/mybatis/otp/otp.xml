@@ -15,7 +15,8 @@
     <select id="findByUserName" parameterType="String" resultType="com.nexon.maple.otp.entity.Otp">
         SELECT IDX, USER_NAME userName, OTP_NUMBER otpNumber
         FROM OTP_INFO
-        WHERE USER_NAME = #{value}
+        WHERE USER_NAME = #{userName}
+        AND CREATED_AT >= DATE_ADD(NOW(), INTERVAL -3 MINUTE)
         ORDER BY CREATED_AT
         DESC LIMIT 1
     </select>

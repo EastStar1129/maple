@@ -62,6 +62,7 @@ public class SecurityConfig{
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true).deleteCookies(jwtToken.getAccessTokenName())
                 .invalidateHttpSession(true).deleteCookies(jwtToken.getRefreshTokenName())
+                .invalidateHttpSession(true).deleteCookies(jwtToken.getTokenFlagName())
                 .invalidateHttpSession(true).deleteCookies("JSESSIONID")
             .and()
                 .authorizeRequests()
