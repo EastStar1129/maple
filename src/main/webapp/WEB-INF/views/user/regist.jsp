@@ -8,11 +8,6 @@
     <title>회원가입</title>
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
 </head>
-    <script>
-        if(localStorage.getItem('Authorization') != null) {
-            location.href = "/";
-        }
-    </script>
 <body>
 
 <div class="container">
@@ -74,15 +69,8 @@
 
         const response = await mapleFetchAsync(url, method, {}, null);
 
-        if(response.status != 200){
-            alert('아이디를 확인해주세요.');
-            return;
-        }
-
-        response.text().then((value) => {
-            document.getElementById('otpNumber').value = value;
-            alert('OTP 번호가 발급되었습니다.');
-        })
+        alert(response.getMessage());
+        document.getElementById('otpNumber').value = response.getData();
     }
 
     const fncRegist = async () => {
@@ -102,9 +90,8 @@
         const body = JSON.stringify(serializedFrmRegisterData);
 
         const response = await mapleFetchAsync(url, method, header, body);
-
-        if (response.status == 200) {
-            alert('회원가입이 완료되었습니다. 로그인해주세요.');
+        alert(response.getMessage());
+        if(response.isSuccess()) {
             location.href = '/user/login';
         }
     }

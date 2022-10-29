@@ -1,4 +1,4 @@
-//fetch mehotd 선언
+//method type
 const METHOD_TYPE = {
     GET : "GET",
     POST : "POST",
@@ -6,69 +6,71 @@ const METHOD_TYPE = {
     DELETE : "DELETE"
 };
 
+//response api
+const RESPONSE_KEY = {
+    CODE: 'code',
+    MESSAGE: 'message',
+    DATA: 'data'
+};
+
+//code type
+const CODE_TYPE = {
+    SUCCESS: 'SUCCESS',
+    FAIL: 'FAIL'
+}
+
+//response class
+ResponseData = function(data) {
+    this.data = data;
+
+    this.getMessage = function() {
+        return data[RESPONSE_KEY.MESSAGE];
+    }
+
+    this.getCode = function() {
+        return data[RESPONSE_KEY.CODE];
+    }
+
+    this.isSuccess = function() {
+        return data[RESPONSE_KEY.CODE] == CODE_TYPE.SUCCESS;
+    }
+
+    this.isFail = function() {
+        return data[RESPONSE_KEY.CODE] == CODE_TYPE.FAIL;
+    }
+
+    this.getData = function() {
+        return data[RESPONSE_KEY.DATA];
+    }
+}
+
 // FormData to serialize
-// 인증이 필요하지않은 경우
-let loading = false;
 const mapleFetch = (url, method, headers, body, function1) => {
-    if(loading) {
-        console.log("작업이 진행중입니다.");
-        return;
-    }
-    loading = true;
-    let fetchConfig = {};
-
-    if(url == null || method == null) {
-        return;
-    }
-    fetchConfig.method = method;
-
-    if(headers != null) {
-        fetchConfig.headers = headers;
-    }
-
-    let authorization = localStorage.getItem("Authorization")
-    if(authorization != null) {
-        fetchConfig.headers.authorization = authorization;
-    }
-
-    if(body != null) {
-        fetchConfig.body = body;
-    }
+    let fetchConfig = getRequestConfig(url, method, headers, body);
 
     fetch(url, fetchConfig)
-        .then(function1)
-        .finally(() => loading = false);
+        .then(function1);
 }
 
 const mapleFetchAsync = async (url, method, headers, body) => {
+    let fetchConfig = getRequestConfig(url, method, headers, body);
 
+    const response = await fetch(url, fetchConfig);
+    const data = await response.json();
+    return new ResponseData(data);
+}
+
+const getRequestConfig = (url, method, headers, body) => {
     if(url == null || method == null) {
+        throw ("url or method is null");
         return;
     }
 
-    let fetchConfig = {};
-
-    fetchConfig.method = method;
-    if(headers != null) {
-        fetchConfig.headers = headers;
-    }
-
-    let authorization = localStorage.getItem("Authorization")
-    if(authorization != null) {
-        fetchConfig.headers.authorization = authorization;
-    }
-
-    if(body != null) {
-        fetchConfig.body = body;
-    }
-
-    const response = await fetch(url, fetchConfig);
-    if (response.status == 401 && response.headers.get("X-Token") == 'true') {
-        await reissue();
-        fetchConfig.headers.authorization = localStorage.getItem("Authorization");
-        return await fetch(url, fetchConfig);
-    }
-    return response;
+    return {
+        method: method,
+        headers: headers,
+        body: body
+    };
 }
 
 //form id를 입력받아 폼데이터를 json으로 반환
@@ -108,53 +110,25 @@ const serialize = (rawData) => {
     >> 로그아웃 처리
  */
 const effectiveToken = async () => {
-    if (localStorage.getItem("Authorization") != null) {
-        let fetchConfig = {};
-
-        let url = "/effectiveToken";
-        fetchConfig.method = METHOD_TYPE.GET;
-        fetchConfig.headers = {
-            authorization: localStorage.getItem("Authorization")
-        };
-
-        const response = await fetch(url, fetchConfig);
-        if (response.status == 200) {
-            return;
-        }
-
-        if (response.status == 401 && response.headers.get("X-Token") == 'true') {
-            await reissue();
-            fetchConfig.headers.authorization = localStorage.getItem("Authorization");
-            const response2 = await fetch(url, fetchConfig);
-            if (response2.status == 200) {
-                return;
-            }
-        }
-
-        localStorage.removeItem("Authorization");
-        alert("로그아웃 되었습니다.");
-        location.reload();
-    }
+    let url = "/effectiveToken";
+    let fetchConfig = {
+        method: METHOD_TYPE.GET
+    };
+    fetch(url, fetchConfig)
+        .then((response) => {
+            if(response.status !== 200)
+                console.log(response.status);
+        });
 }
 
-const reissue = async () => {
-    if (localStorage.getItem("Authorization") != null) {
-        let fetchConfig = {};
+const getURILastSegment = () => {
+    const parts = window.location.pathname.split('/');
+    return parts.pop() || parts.pop();  // handle potential trailing slash
+}
 
-        let url = "/reissue";
-        fetchConfig.method = METHOD_TYPE.GET;
-        fetchConfig.headers = {
-            authorization: localStorage.getItem("Authorization")
-        };
-
-        const response = await fetch(url, fetchConfig);
-        if (response.headers.get("Authorization") == null) {
-            alert("token 재발급에 실패했습니다.");
-            throw 'token reissue error';
-            return;
-        }
-        localStorage.setItem("Authorization", response.headers.get("Authorization"));
-    }
+const threeComma = (str) => {
+    str += '';
+    return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

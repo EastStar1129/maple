@@ -1,5 +1,7 @@
 package com.nexon.maple.comment.entity;
 
+import com.nexon.maple.comment.dto.WriteComment;
+import com.nexon.maple.userInfo.dto.ResponseUserInfo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +25,14 @@ public class CommentInfo {
         this.userId = Objects.requireNonNull(userId);
         this.comment = Objects.requireNonNull(comment);
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+    }
+
+    public static CommentInfo of(WriteComment writeComment, ResponseUserInfo userInfo) {
+        CommentInfo commentInfo = CommentInfo.builder()
+                .characterId(writeComment.characterId())
+                .userId(userInfo.id())
+                .comment(writeComment.comment())
+                .build();
+        return commentInfo;
     }
 }

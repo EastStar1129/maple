@@ -5,7 +5,6 @@ import com.nexon.maple.userInfo.entity.UserInfo;
 import com.nexon.maple.userInfo.repository.UserInfoDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 @RequiredArgsConstructor
 @Service
@@ -14,20 +13,20 @@ public class UserInfoReadService {
 
     public ResponseUserInfo selectUserInfo(Long id) {
         UserInfo userInfo = userInfoDao.find(id);
-        return toResponseUserInfo(userInfo);
+        return ofResponseUserInfo(userInfo);
     }
 
     public ResponseUserInfo selectUserInfo(String name) {
         UserInfo userInfo = userInfoDao.findByName(name);
-        return toResponseUserInfo(userInfo);
+        return ofResponseUserInfo(userInfo);
     }
 
     public ResponseUserInfo selectUserInfo(UserInfo userInfo) {
         UserInfo userInfo2 = userInfoDao.findByNameAndPassword(userInfo);
-        return toResponseUserInfo(userInfo2);
+        return ofResponseUserInfo(userInfo2);
     }
 
-    private ResponseUserInfo toResponseUserInfo(UserInfo userInfo) {
+    private ResponseUserInfo ofResponseUserInfo(UserInfo userInfo) {
         if(userInfo == null) {
             return null;
         }

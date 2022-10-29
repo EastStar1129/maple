@@ -35,12 +35,16 @@ public class JwtToken {
     private String grade;
     @Value("${jwt.type}")
     private String type;
-    @Value("${jwt.header}")
-    private String header;
+    @Value("${jwt.accessTokenName}")
+    private String accessTokenName;
+    @Value("${jwt.refreshTokenName}")
+    private String refreshTokenName;
+    @Value("_inf")
+    private String tokenFlagName;
 
     private Key hashKey;
 
-    public static final int ACCESS_TOKEN_EXPIRE_TIME = 1 * 30 * 1000;              // 30분
+    public static final int ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;              // 30분
     public static final int REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;    // 7일 ( 1주일 )
 
     private void initHashKey() {
@@ -181,7 +185,7 @@ public class JwtToken {
         return token.substring(type.length()+1);
     }
 
-    public Long getExpiration(String accessToken) {
+    public String getExpiration(String accessToken) {
         // accessToken 남은 유효시간
         Date expiration = Jwts.parserBuilder()
                 .setSigningKey(hashKey)
@@ -190,8 +194,6 @@ public class JwtToken {
                 .getBody()
                 .getExpiration();
 
-        // 현재 시간
-        Long now = new Date().getTime();
-        return (expiration.getTime() - now);
+        return Objects.toString(expiration.getTime());
     }
 }

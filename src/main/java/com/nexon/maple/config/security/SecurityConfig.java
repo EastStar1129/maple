@@ -4,6 +4,7 @@ import com.nexon.maple.config.security.auth.AuthEntryPointJwt;
 import com.nexon.maple.config.security.filter.JwtAuthenticationFilter;
 import com.nexon.maple.config.security.filter.JwtAuthorizationFilter;
 import com.nexon.maple.config.security.jwt.JwtToken;
+import com.nexon.maple.login.service.LoginService;
 import com.nexon.maple.userInfo.entity.GradeCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class SecurityConfig{
     private final CorsFilter corsFilter;
     private final AuthEntryPointJwt authEntryPointJwt;
     private final JwtToken jwtToken;
+    private final LoginService loginService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -58,7 +60,10 @@ public class SecurityConfig{
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
-                .invalidateHttpSession(true).deleteCookies(jwtToken.getHeader())
+                .invalidateHttpSession(true).deleteCookies(jwtToken.getAccessTokenName())
+                .invalidateHttpSession(true).deleteCookies(jwtToken.getRefreshTokenName())
+                .invalidateHttpSession(true).deleteCookies(jwtToken.getTokenFlagName())
+                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
             .and()
                 .authorizeRequests()
                 .antMatchers("/user/info")
@@ -86,9 +91,9 @@ public class SecurityConfig{
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsFilter)
-                    .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtToken),
+                    .addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtToken, loginService),
                             UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, jwtToken),
+                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, jwtToken, loginService),
                             UsernamePasswordAuthenticationFilter.class);
         }
     }

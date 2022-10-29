@@ -4,10 +4,8 @@ import com.nexon.maple.userInfo.dto.UserName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.AssertTrue;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
@@ -19,6 +17,7 @@ public class Otp {
     private String userName;
     private String otpNumber;
     private LocalDateTime createdAt;
+    private Integer minute = 3;
 
     public static final int OTP_NUMBER_LENGTH = 8;
 

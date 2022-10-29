@@ -24,7 +24,7 @@ public class SelectCharacterInfoService {
         // 1
         var characterInfo = characterInfoReadService.select(userName);
         if(characterInfo != null) {
-            return toResponseCharacterInfo(characterInfo);
+            return ofResponseCharacterInfo(characterInfo);
         }
 
         // 2
@@ -34,13 +34,13 @@ public class SelectCharacterInfoService {
         }
 
         // 3
-        var saveCharacterInfo = toCharacterInfo(mapleCharacter);
+        var saveCharacterInfo = ofCharacterInfo(mapleCharacter);
         characterInfoWriteService.save(saveCharacterInfo);
 
-        return toResponseCharacterInfo(saveCharacterInfo);
+        return ofResponseCharacterInfo(saveCharacterInfo);
     }
 
-    private CharacterInfo toCharacterInfo(MapleCharacter mapleCharacter) {
+    private CharacterInfo ofCharacterInfo(MapleCharacter mapleCharacter) {
         CharacterInfo characterInfo = CharacterInfo.builder()
                 .image(mapleCharacter.getImage())
                 .characterRank(mapleCharacter.getRank())
@@ -60,7 +60,7 @@ public class SelectCharacterInfoService {
         return new CustomMapleCharacter(userName).getMapleCharacter();
     }
 
-    public ResponseCharacterInfo toResponseCharacterInfo(CharacterInfo characterInfo) {
+    public ResponseCharacterInfo ofResponseCharacterInfo(CharacterInfo characterInfo) {
         return ResponseCharacterInfo.builder()
                 .id(characterInfo.getId())
                 .image(characterInfo.getImage())

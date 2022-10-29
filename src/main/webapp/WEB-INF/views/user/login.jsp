@@ -9,11 +9,6 @@
     <script type="text/javascript" src="/resources/js/comm/fetch.js"></script>
 </head>
 <body>
-<script>
-    if(localStorage.getItem('Authorization') != null) {
-        location.href = "/";
-    }
-</script>
 <div class="container">
     <form id="frmRegister">
         <div>
@@ -34,6 +29,7 @@
     const fncLogin = async () => {
         const serializedFrmRegisterData = getFormDataJson("frmRegister");
 
+        //검증
         if(!validationName(serializedFrmRegisterData.name)) {
             return;
         }
@@ -51,12 +47,12 @@
         const body = JSON.stringify(serializedFrmRegisterData);
 
         const response = await mapleFetchAsync(url, method, header, body);
-        if (response.status != 200 || response.headers.get("Authorization") == null) {
-            alert('회원정보를 확인하세요.');
-            return;
+        if(response.isSuccess()) {
+            location.href = "/";
+            return ;
         }
-        localStorage.setItem("Authorization", response.headers.get("Authorization"));
-        location.href = "/";
+
+        alert("회원정보를 확인하세요.");
     }
 
     const validationName = (to) => {
