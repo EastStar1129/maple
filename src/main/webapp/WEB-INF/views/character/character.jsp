@@ -58,7 +58,6 @@
                 </div>
                 <div class="active">
                     <form id="frmComment">
-                        <input type="hidden" id="userId" name="userId" value="1">
                         <input type="hidden" id="characterId" name="characterId">
                         <textarea id="comment" name="comment"></textarea>
                         <button type="button" id="btnWriteComment">작성</button>
@@ -85,6 +84,15 @@
 
 </body>
 <script>
+
+    const selectInfo = async() => {
+        const lastSegment = getURILastSegment();
+        if(lastSegment == null || lastSegment == 'character') {
+            return;
+        }
+        await selectUserInfo(lastSegment);
+        await selectComments();
+    }
     const selectUserInfo = async (characterName) => {
         const url = "/" + characterName + "/character";
         const method = METHOD_TYPE.GET;
@@ -94,55 +102,64 @@
 
         const response = await mapleFetchAsync(url, method, header, null);
 
-        response
-            .json()
-            .then((data) => {
-                if(data[RESPONSE_KEY.CODE] != RESPONSE_KEY.CODE_TYPE.SUCCESS) {
-                    alert(data[RESPONSE_KEY.MESSAGE]);
-                    return ;
-                }
-
-                document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
-                let info = data[RESPONSE_KEY.DATA];
-
-                document.getElementById('character_area').className = 'inactive';
-
-                document.getElementById('image').src = info.image;
-                document.getElementById('characterId').value = info.id;
-                document.getElementById('rank').innerHTML = threeComma(info.rank);
-                document.getElementById('rankMove').innerHTML = threeComma(info.rankMove);
-                document.getElementById('userName').innerHTML = info.userName;
-                document.getElementById('job1').innerHTML = info.job1;
-                document.getElementById('job2').innerHTML = info.job2;
-                document.getElementById('level').innerHTML = info.level;
-                document.getElementById('experience').innerHTML = threeComma(info.experience);
-                document.getElementById('popularity').innerHTML = threeComma(info.popularity);
-                document.getElementById('guildName').innerHTML = info.guildName==null?'-':info.guildName;
-                selectComments();
-            })
-            .catch((err) => {
-                document.getElementById('character_area').className = 'active';
-                console.log(err);
-            });
-    }
-
-    const validateCharacterURI = () => {
-
-        const lastSegment = getURILastSegment();
-        if(lastSegment == null || lastSegment == 'character') {
+        if(!response.isSuccess() || response.getData() == null) {
+            alert(response.getMessage());
+            document.getElementById('character_area').className = 'active';
             return;
         }
-        selectUserInfo(lastSegment);
+
+        const info = response.getData();
+
+        document.getElementById('character_area').className = 'inactive';
+
+        document.getElementById('image').src = info.image;
+        document.getElementById('characterId').value = info.id;
+        document.getElementById('rank').innerHTML = threeComma(info.rank);
+        document.getElementById('rankMove').innerHTML = threeComma(info.rankMove);
+        document.getElementById('userName').innerHTML = info.userName;
+        document.getElementById('job1').innerHTML = info.job1;
+        document.getElementById('job2').innerHTML = info.job2;
+        document.getElementById('level').innerHTML = info.level;
+        document.getElementById('experience').innerHTML = threeComma(info.experience);
+        document.getElementById('popularity').innerHTML = threeComma(info.popularity);
+        document.getElementById('guildName').innerHTML = info.guildName==null?'-':info.guildName;
     }
 
-    const getURILastSegment = () => {
-        let parts = window.location.pathname.split('/');
-        return parts.pop() || parts.pop();  // handle potential trailing slash
-    }
+    const selectComments = async () => {
+        document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
+        const id = document.getElementById('characterId').value;
+        if(id == null || id.length == 0) {
+            return;
+        }
 
-    const threeComma = (str) => {
-        str += '';
-        return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        const url = "/" + id + "/comments";
+        const method = METHOD_TYPE.GET;
+        const header = {
+            "Content-Type": "application/json",
+        };
+
+        let response = await mapleFetchAsync(url, method, header, null);
+        if(!response.isSuccess()) {
+            alert(response.getMessage());
+            return;
+        }
+
+        let list = response.getData();
+        /**
+         * TODO
+         * id
+         * characterId
+         * userId
+         * comment
+         * createdAt
+         * 활용해서 댓글리스트 만들기 ( design )
+        */
+        const commentList = document.getElementById('commentList');
+        for(const value of list) {
+            let element = document.createElement('div');
+            element.innerHTML = JSON.stringify(value);
+            commentList.appendChild(element);
+        }
     }
 
     const writeComment = async () => {
@@ -162,49 +179,17 @@
 
         const response = await mapleFetchAsync(url, method, header, body);
 
-        if (response.status == 200) {
-            alert('댓글이 등록되었습니다.');
-            document.getElementById('comment').value = "";
-            selectComments();
-        } else {
-            alert('댓글이 등록되지 않았습니다.');
-        }
-    }
-
-    const selectComments = () => {
-        const id = document.getElementById('characterId').value;
-        if(id == null || id.length == 0) {
+        if(!response.isSuccess()) {
+            alert(response.getMessage());
             return;
         }
 
-        const url = "/" + id + "/comments";
-        const method = METHOD_TYPE.GET;
-        const header = {
-            "Content-Type": "application/json",
-        };
-
-        mapleFetch(url, method, header, null,
-            (response) => response.json().then((list) => {
-                /**
-                 * TODO
-                 * id
-                 * characterId
-                 * userId
-                 * comment
-                 * createdAt
-                 * 활용해서 댓글리스트 만들기 ( design )
-                */
-                const commentList = document.getElementById('commentList');
-                for(const value of list) {
-                    let element = document.createElement('div');
-                    element.innerHTML = JSON.stringify(value);
-                    commentList.appendChild(element);
-                }
-            })
-        );
+        alert('댓글이 등록되었습니다.');
+        document.getElementById('comment').value = "";
+        await selectComments();
     }
 
-    const initCommentWriteBlind = () => {
+    const commentWriteBlind = () => {
         const element = document.getElementById('comment_area');
         if(!isLogin()) {
             element.className = 'inactive';
@@ -212,7 +197,7 @@
         }
 
         //block
-        if(isBlind()) {
+        if(isBlock()) {
             element.className = 'inactive';
             element.querySelector('.inactive').innerText = "차단된 유저입니다.";
             return ;
@@ -222,8 +207,8 @@
     }
 
     const documentOnload = () => {
-        initCommentWriteBlind();
-        validateCharacterURI();
+        selectInfo();
+        commentWriteBlind();
     }
 
     document.getElementById('btnWriteComment').addEventListener('click', writeComment, false);
