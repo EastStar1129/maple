@@ -1,12 +1,18 @@
 package com.nexon.maple.userInfo.entity;
 
 
-import com.nexon.maple.util.Encryption.SHA256;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class UserInfoTest {
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Test
     public void 캐릭터명과_패스워드입력_패스워드가암호화되는지_테스트() {
@@ -14,11 +20,13 @@ class UserInfoTest {
         String name = "캐릭터";
         String password = "password";
 
-        //when
         UserInfo userInfo = UserInfo.builder()
                 .name(name)
                 .password(password)
                 .build();
+
+        //when
+        userInfo.encryptPassword(bCryptPasswordEncoder);
 
         /*
          * 코드는 옵션사항이다.
@@ -26,7 +34,7 @@ class UserInfoTest {
          * */
         assertAll(
                 () -> assertEquals(name, userInfo.getName()),
-                () -> assertEquals(new SHA256().encrypt(password), userInfo.getPassword())
+                () -> assertTrue(bCryptPasswordEncoder.matches(password, userInfo.getPassword()))
         );
     }
 

@@ -1,6 +1,5 @@
 package com.nexon.maple.otp.entity;
 
-import com.nexon.maple.character.entity.CharacterInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ class OtpTest {
         String otpNumber = "12345678";
 
         //when-then
-        assertThrows(NullPointerException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> Otp.builder().build());
     }
 
