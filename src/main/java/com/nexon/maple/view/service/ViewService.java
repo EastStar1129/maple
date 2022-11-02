@@ -1,7 +1,7 @@
 package com.nexon.maple.view.service;
 
 import com.nexon.maple.terms.dto.ResponseTermsInfo;
-import com.nexon.maple.terms.dto.TermsType;
+import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.terms.entity.TermsInfo;
 import com.nexon.maple.terms.repository.TermsInfoDao;
 import lombok.RequiredArgsConstructor;

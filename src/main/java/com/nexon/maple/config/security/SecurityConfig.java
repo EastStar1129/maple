@@ -5,7 +5,7 @@ import com.nexon.maple.config.security.filter.JwtAuthenticationFilter;
 import com.nexon.maple.config.security.filter.JwtAuthorizationFilter;
 import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.login.service.LoginService;
-import com.nexon.maple.userInfo.entity.GradeCode;
+import com.nexon.maple.userInfo.type.GradeCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

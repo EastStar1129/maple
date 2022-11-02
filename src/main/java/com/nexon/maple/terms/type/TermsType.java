@@ -1,4 +1,4 @@
-package com.nexon.maple.terms.dto;
+package com.nexon.maple.terms.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

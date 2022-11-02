@@ -2,7 +2,7 @@ package com.nexon.maple.userInfo.service;
 
 import com.nexon.maple.otp.service.OtpReadService;
 import com.nexon.maple.terms.dto.ResponseTermsInfo;
-import com.nexon.maple.terms.dto.TermsType;
+import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.terms.service.TermsInfoReadService;
 import com.nexon.maple.terms.service.TermsInfoWriteService;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;

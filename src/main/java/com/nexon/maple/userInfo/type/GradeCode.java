@@ -1,4 +1,4 @@
-package com.nexon.maple.userInfo.entity;
+package com.nexon.maple.userInfo.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
