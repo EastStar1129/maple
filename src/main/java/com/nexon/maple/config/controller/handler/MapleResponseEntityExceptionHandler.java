@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class MapleResponseEntityExceptionHandler {
@@ -25,9 +26,8 @@ public class MapleResponseEntityExceptionHandler {
     }
 
     //Controller ParameterError
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ResponseDTO> handleMethodArgumentTypeMismatchExceptionException(MethodArgumentTypeMismatchException ex) {
-        ex.printStackTrace();
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ResponseDTO> handleConstraintViolationExceptionException(ConstraintViolationException ex) {
         ResponseDTO exceptionResponse = ResponseDTO.ofFail(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }

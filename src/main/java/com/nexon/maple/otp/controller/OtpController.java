@@ -5,6 +5,7 @@ import com.nexon.maple.otp.service.OtpWriteService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 public class OtpController {
     private final OtpWriteService otpWriteService;
 

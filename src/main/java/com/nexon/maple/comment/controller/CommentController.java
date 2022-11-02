@@ -7,6 +7,7 @@ import com.nexon.maple.config.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import java.security.Principal;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 public class CommentController {
     private final CommentReadService commentReadService;
     private final CommentWriteService commentWriteService;

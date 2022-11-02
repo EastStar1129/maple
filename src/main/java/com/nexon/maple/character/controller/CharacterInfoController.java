@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 @Controller
+@Validated
 public class CharacterInfoController {
     private final SelectCharacterInfoService selectCharacterInfoService;
 

@@ -5,12 +5,14 @@ import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
 import com.nexon.maple.userInfo.service.RegisteUserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 public class UserController {
     private final RegisteUserInfoService registeUserInfoService;
 
