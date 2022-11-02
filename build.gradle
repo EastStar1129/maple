@@ -127,6 +127,12 @@ jacocoTestCoverageVerification {
                 value = 'TOTALCOUNT'
                 maximum = 200
             }
+
+            //제외 대상
+            excludes = [
+                    '*.config.*.*.*',
+                    '*.Response*DTO'
+            ]
         }
     }
 }

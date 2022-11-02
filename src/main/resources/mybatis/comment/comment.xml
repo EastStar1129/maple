@@ -6,7 +6,7 @@
 <mapper namespace="com.nexon.maple.comment.repository.CommentDao">
 
     <!-- 캐릭터 정보 조회 -->
-    <select id="findByCharacterId" parameterType="String" resultType="com.nexon.maple.comment.entity.CommentInfo">
+    <select id="findByCharacterId" parameterType="Long" resultType="com.nexon.maple.comment.entity.CommentInfo">
         SELECT
             ID, CHARACTER_ID characterId, USER_ID userId, COMMENT, CREATED_AT createAt
         FROM COMMENT_INFO

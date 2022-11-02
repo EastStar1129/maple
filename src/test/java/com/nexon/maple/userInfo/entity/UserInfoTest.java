@@ -39,9 +39,9 @@ class UserInfoTest {
     }
 
     @Test
-    public void 이름은10자리_패스워드는8에서15자리_실패_테스트() {
+    public void 이름은12자리_패스워드는8에서15자리_실패_테스트() {
         //given
-        String name = "12345678901";
+        String name = "1234567890123";
         String password = "123456789123456789";
         String password2 = "12";
 

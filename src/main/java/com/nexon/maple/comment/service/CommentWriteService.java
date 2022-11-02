@@ -1,9 +1,9 @@
 package com.nexon.maple.comment.service;
 
-import com.nexon.maple.comment.dto.WriteComment;
+import com.nexon.maple.comment.dto.WriteCommentDTO;
 import com.nexon.maple.comment.entity.CommentInfo;
 import com.nexon.maple.comment.repository.CommentDao;
-import com.nexon.maple.userInfo.dto.ResponseUserInfo;
+import com.nexon.maple.userInfo.dto.ResponseUserInfoDTO;
 import com.nexon.maple.userInfo.service.UserInfoReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ public class CommentWriteService {
     private final CommentDao commentDao;
     private final UserInfoReadService userInfoReadService;
 
-    public void saveComment(Principal principal, WriteComment writeComment) {
-        ResponseUserInfo userInfo = userInfoReadService.selectUserInfo(principal.getName());
+    public void saveComment(Principal principal, WriteCommentDTO writeComment) {
+        ResponseUserInfoDTO userInfo = userInfoReadService.selectUserInfo(principal.getName());
 
         CommentInfo commentInfo = CommentInfo.of(writeComment, userInfo);
 

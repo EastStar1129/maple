@@ -1,6 +1,6 @@
 package com.nexon.maple.view.service;
 
-import com.nexon.maple.terms.dto.ResponseTermsInfo;
+import com.nexon.maple.terms.dto.ResponseTermsInfoDTO;
 import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.terms.entity.TermsInfo;
 import com.nexon.maple.terms.repository.TermsInfoDao;
@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 public class ViewService {
     private final TermsInfoDao termsInfoDao;
 
-    public List<ResponseTermsInfo> selectLoginTermsList() {
+    public List<ResponseTermsInfoDTO> selectLoginTermsList() {
         return findByTypeToLogin();
     }
 
-    public List<ResponseTermsInfo> findByTypeToLogin() {
+    public List<ResponseTermsInfoDTO> findByTypeToLogin() {
         List<TermsInfo> list = termsInfoDao.findAllByType(TermsType.LOGIN.getTitle());
 
         return list.stream()
-                .map(ResponseTermsInfo::new)
+                .map(ResponseTermsInfoDTO::new)
                 .collect(Collectors.toList());
     }
 }

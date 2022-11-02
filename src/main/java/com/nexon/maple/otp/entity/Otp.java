@@ -1,6 +1,6 @@
 package com.nexon.maple.otp.entity;
 
-import com.nexon.maple.userInfo.dto.UserName;
+import com.nexon.maple.userInfo.entity.UserName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

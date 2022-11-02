@@ -1,18 +1,17 @@
 package com.nexon.maple.terms.dto;
 
 import com.nexon.maple.terms.entity.TermsInfo;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ResponseTermsInfo {
+public class ResponseTermsInfoDTO {
     Long code;
     String type;
     String name;
     String content;
     String requiredTerms;
 
-    public ResponseTermsInfo(TermsInfo termsInfo) {
+    public ResponseTermsInfoDTO(TermsInfo termsInfo) {
         this.code = termsInfo.getCode();
         this.type = termsInfo.getType();
         this.name = termsInfo.getName();

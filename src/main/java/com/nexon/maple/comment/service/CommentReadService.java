@@ -1,6 +1,6 @@
 package com.nexon.maple.comment.service;
 
-import com.nexon.maple.comment.dto.ResponseCommentInfo;
+import com.nexon.maple.comment.dto.ResponseCommentInfoDTO;
 import com.nexon.maple.comment.entity.CommentInfo;
 import com.nexon.maple.comment.repository.CommentDao;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,9 @@ import java.util.List;
 public class CommentReadService {
     private final CommentDao commentDao;
 
-    public List<ResponseCommentInfo> selectComment(String characterId) {
+    public List<ResponseCommentInfoDTO> selectComment(Long characterId) {
         List<CommentInfo> commentInfoList = commentDao.findByCharacterId(characterId);
 
-        return ResponseCommentInfo.ofList(commentInfoList);
+        return ResponseCommentInfoDTO.ofList(commentInfoList);
     }
 }

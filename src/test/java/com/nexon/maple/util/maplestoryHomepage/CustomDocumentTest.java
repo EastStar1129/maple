@@ -11,7 +11,7 @@ public class CustomDocumentTest {
         //given
         String name = "구로5동혀로";
         String otpNumber = "M1770A";
-        String pageNumber = "1";
+        Long pageNumber = 1L;
 
         //when
         CustomMapleComment customComment = new CustomMapleComment(name, pageNumber);
@@ -25,7 +25,7 @@ public class CustomDocumentTest {
         //given
         String name = "admin"; // admin은 닉네임 금지어이므로 절대 나올수 없다.
         String otpNumber = "M1770A";
-        String pageNumber = "1";
+        Long pageNumber = 1L;
 
         //when
         CustomMapleComment customComment = new CustomMapleComment(name, pageNumber);
