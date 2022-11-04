@@ -20,18 +20,8 @@ public class LoginService {
     private final JwtToken jwtToken;
     private final UserInfoDao userInfoDao;
 
-    /*
-        TODO :
-         1. response 토큰을 가져옴
-         2. AccessToken 검증
-            2-1 검증완료 로그인
-            2-2 만료 >> 3
-         3. RefreshToken 검증
-            3-1 검증완료 로그인 ( AccessToken 재발급, RefreshToken 재발급 )
-            3-2 만료 >> 4
-         4. 재로그인
-     */
-
+    //로그인 시 사용되는 함수
+    //로그인 이후 반환값 설정
     public void addHeaderToken(HttpServletResponse response, PrincipalDetails principalDetails) throws IOException {
         setHeaderToken(response, principalDetails);
         response
@@ -42,11 +32,13 @@ public class LoginService {
                 );
     }
 
+    //재발급 시 사용되는 함수
     public void addHeaderToken(HttpServletResponse response, String userName) throws IOException {
         UserInfo userInfo = userInfoDao.findByName(userName);
         setHeaderToken(response, new PrincipalDetails(userInfo));
     }
 
+    //Cookie에 Token을 발급하는 공통 함수
     private void setHeaderToken(HttpServletResponse response, PrincipalDetails principalDetails) throws IOException {
         String accessToken = jwtToken.generateAccessToken(principalDetails);
         Cookie accessTokenCookie = new Cookie(jwtToken.getAccessTokenName(), accessToken);

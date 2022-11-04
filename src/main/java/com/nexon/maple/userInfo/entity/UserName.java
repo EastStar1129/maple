@@ -1,4 +1,4 @@
-package com.nexon.maple.userInfo.dto;
+package com.nexon.maple.userInfo.entity;
 
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -8,7 +8,7 @@ public class UserName {
     String userName;
 
     private static final Long NAME_MIN_LENGTH = 2L;
-    private static final Long NAME_MAX_LENGTH = 10L;
+    private static final Long NAME_MAX_LENGTH = 12L;
 
     public UserName() {}
 

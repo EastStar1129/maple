@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexon.maple.config.security.auth.PrincipalDetails;
 import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.login.service.LoginService;
-import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
+import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
 import com.nexon.maple.userInfo.entity.UserInfo;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -63,14 +63,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         ObjectMapper om = new ObjectMapper();
-        RegisterUserInfoCommand command;
+        RegisterUserInfoDTO registerUserInfoDTO;
 
-        command = om.readValue(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8),
-                RegisterUserInfoCommand.class);
+        registerUserInfoDTO = om.readValue(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8),
+                RegisterUserInfoDTO.class);
 
         UserInfo userInfo = UserInfo.builder()
-                .name(command.name())
-                .password(command.password())
+                .name(registerUserInfoDTO.getName())
+                .password(registerUserInfoDTO.getPassword())
                 .build();
 
         UsernamePasswordAuthenticationToken authenticationToken =

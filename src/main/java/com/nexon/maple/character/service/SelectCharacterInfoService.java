@@ -1,6 +1,6 @@
 package com.nexon.maple.character.service;
 
-import com.nexon.maple.character.dto.ResponseCharacterInfo;
+import com.nexon.maple.character.dto.ResponseCharacterInfoDTO;
 import com.nexon.maple.character.entity.CharacterInfo;
 import com.nexon.maple.util.maplestoryHomepage.CustomMapleCharacter;
 import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
@@ -15,7 +15,7 @@ public class SelectCharacterInfoService {
     private final CharacterInfoWriteService characterInfoWriteService;
 
     @Transactional
-    public ResponseCharacterInfo select(String userName) {
+    public ResponseCharacterInfoDTO select(String userName) {
         /*
             1. DB 조회
             2. 조회 데이터가 없는 경우 크롤링
@@ -60,8 +60,8 @@ public class SelectCharacterInfoService {
         return new CustomMapleCharacter(userName).getMapleCharacter();
     }
 
-    public ResponseCharacterInfo ofResponseCharacterInfo(CharacterInfo characterInfo) {
-        return ResponseCharacterInfo.builder()
+    public ResponseCharacterInfoDTO ofResponseCharacterInfo(CharacterInfo characterInfo) {
+        return ResponseCharacterInfoDTO.builder()
                 .id(characterInfo.getId())
                 .image(characterInfo.getImage())
                 .rank(characterInfo.getCharacterRank())

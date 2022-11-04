@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ResponseCharacterInfo {
+public class ResponseCharacterInfoDTO {
     Long id;
     String image;
     Long rank;
@@ -18,7 +18,7 @@ public class ResponseCharacterInfo {
     String guildName;
 
     @Builder
-    public ResponseCharacterInfo(Long id, String image, Long rank, String rankMove, String userName, String job1, String job2, String level, String experience, Long popularity, String guildName) {
+    public ResponseCharacterInfoDTO(Long id, String image, Long rank, String rankMove, String userName, String job1, String job2, String level, String experience, Long popularity, String guildName) {
         this.id = id;
         this.image = image;
         this.rank = rank;

@@ -1,6 +1,6 @@
 package com.nexon.maple.terms.service;
 
-import com.nexon.maple.terms.dto.ResponseTermsInfo;
+import com.nexon.maple.terms.dto.ResponseTermsInfoDTO;
 import com.nexon.maple.terms.entity.TermsInfo;
 import com.nexon.maple.terms.repository.TermsInfoDao;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +14,12 @@ import java.util.List;
 public class TermsInfoReadService {
     private final TermsInfoDao termsInfoDao;
 
-    public List<ResponseTermsInfo> selectTerms(String type) {
+    public List<ResponseTermsInfoDTO> selectTerms(String type) {
         List<TermsInfo> list = termsInfoDao.findAllByType(type);
-        List<ResponseTermsInfo> responseList = new ArrayList<>();
+        List<ResponseTermsInfoDTO> responseList = new ArrayList<>();
 
         for(TermsInfo termsInfo: list) {
-            responseList.add(new ResponseTermsInfo(termsInfo));
+            responseList.add(new ResponseTermsInfoDTO(termsInfo));
         }
 
         return responseList;

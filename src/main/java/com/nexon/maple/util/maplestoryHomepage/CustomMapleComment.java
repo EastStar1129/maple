@@ -1,19 +1,20 @@
 package com.nexon.maple.util.maplestoryHomepage;
 
+import com.nexon.maple.util.maplestoryHomepage.object.otpComment;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 import java.util.Objects;
 
-public class CustomMapleComment implements otpComment{
+public class CustomMapleComment implements otpComment {
     private static final String PREFIX_URL = "https://maplestory.nexon.com/Community/Free/326252/comment?page=";
 
     private HashMap<String, String> commentMap = new HashMap<>();
 
     //메이플 게시판 댓글 가져오기
-    public CustomMapleComment(String name, String page) {
-        String url = PREFIX_URL + page;
+    public CustomMapleComment(String name, Long pageNumber) {
+        String url = PREFIX_URL + pageNumber;
         setComment(new CustomDocument(url, getHeader()), name);
     }
 

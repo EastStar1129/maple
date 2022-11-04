@@ -1,8 +1,6 @@
 package com.nexon.maple.userInfo.dto;
 
-import lombok.NoArgsConstructor;
-
-public record ResponseUserInfo (
+public record ResponseUserInfoDTO(
         Long id,
         String name,
         String gradeCode

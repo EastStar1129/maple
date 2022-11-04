@@ -1,12 +1,12 @@
 package com.nexon.maple.userInfo.service;
 
 import com.nexon.maple.otp.service.OtpReadService;
-import com.nexon.maple.terms.dto.ResponseTermsInfo;
-import com.nexon.maple.terms.dto.TermsType;
+import com.nexon.maple.terms.dto.ResponseTermsInfoDTO;
+import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.terms.service.TermsInfoReadService;
 import com.nexon.maple.terms.service.TermsInfoWriteService;
-import com.nexon.maple.userInfo.dto.RegisterUserInfoCommand;
-import com.nexon.maple.userInfo.dto.ResponseUserInfo;
+import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
+import com.nexon.maple.userInfo.dto.ResponseUserInfoDTO;
 import com.nexon.maple.userInfo.entity.UserInfo;
 import com.nexon.maple.util.maplestoryHomepage.CustomMapleComment;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class RegisteUserInfoService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public void regist(RegisterUserInfoCommand registerUserInfoCommand) {
+    public void regist(RegisterUserInfoDTO registerUserInfoDTO) {
         /*
             1. 데이터 검증
             2. 검증
@@ -40,40 +40,40 @@ public class RegisteUserInfoService {
             3-2 약관동의여부 저장
          */
         UserInfo userInfo = UserInfo.builder()
-                .name(registerUserInfoCommand.name())
-                .password(registerUserInfoCommand.password())
+                .name(registerUserInfoDTO.getName())
+                .password(registerUserInfoDTO.getPassword())
                 .build();
 
         //패스워드 암호화
         userInfo.encryptPassword(bCryptPasswordEncoder);
 
         //검증 로직
-        validationUserInfo(registerUserInfoCommand);
+        validationUserInfo(registerUserInfoDTO);
 
         //저장
-        regist(registerUserInfoCommand, userInfo);
+        regist(registerUserInfoDTO, userInfo);
     }
 
-    private void regist(RegisterUserInfoCommand registerUserInfoCommand, UserInfo userInfo) {
+    private void regist(RegisterUserInfoDTO registerUserInfoCommand, UserInfo userInfo) {
         userInfoWriteService.regist(userInfo);
-        termsInfoWriteService.saveAllTermsInfo(registerUserInfoCommand.terms(), userInfo.getId());
+        termsInfoWriteService.saveAllTermsInfo(registerUserInfoCommand.getTerms(), userInfo.getId());
     }
 
-    private void validationUserInfo(RegisterUserInfoCommand registerUserInfoCommand) {
+    private void validationUserInfo(RegisterUserInfoDTO registerUserInfoCommand) {
         //중복아이디 체크
-        ResponseUserInfo responseUserInfo = userInfoReadService.selectUserInfo(registerUserInfoCommand.name());
+        ResponseUserInfoDTO responseUserInfo = userInfoReadService.selectUserInfo(registerUserInfoCommand.getName());
         Assert.isNull(responseUserInfo, "중복된 아이디가 존재합니다.");
 
         //OTP 조회 여부
-        String otpNumber = otpReadService.selectOtpNumber(registerUserInfoCommand.name());
+        String otpNumber = otpReadService.selectOtpNumber(registerUserInfoCommand.getName());
         validateOtpNumber(registerUserInfoCommand, otpNumber);
 
         //약관 동의 검사
-        List<ResponseTermsInfo> termsInfoList = termsInfoReadService.selectTerms(TermsType.LOGIN.getTitle());
-        validateTerms(termsInfoList, registerUserInfoCommand.terms());
+        List<ResponseTermsInfoDTO> termsInfoList = termsInfoReadService.selectTerms(TermsType.LOGIN.getTitle());
+        validateTerms(termsInfoList, registerUserInfoCommand.getTerms());
     }
 
-    private void validateTerms(List<ResponseTermsInfo> termsInfoList, List<String> terms) {
+    private void validateTerms(List<ResponseTermsInfoDTO> termsInfoList, List<String> terms) {
         long count = termsInfoList.stream()
                 .filter(termsInfo -> termsInfo.getRequiredTerms().equals("Y"))
                 .filter(termsInfo -> terms.contains(String.valueOf(termsInfo.getCode())))
@@ -82,13 +82,13 @@ public class RegisteUserInfoService {
         Assert.isTrue(count == terms.size(), "필수약관에 대한 동의여부가 없습니다.");
     }
 
-    private void validateOtpNumber(RegisterUserInfoCommand registerUserInfoCommand, String otpNumber) {
+    private void validateOtpNumber(RegisterUserInfoDTO registerUserInfoCommand, String otpNumber) {
         /*
             1. 이름에 해당하는 OTP 번호 중 가장 마지막에 발급 된 OTP 번호를 조회한다.
             2. 조회된 OTP 번호와 받은 이름, 페이지번호로 댓글 게시판을 검색한다.
         */
         CustomMapleComment customComment =
-                new CustomMapleComment(registerUserInfoCommand.name(), registerUserInfoCommand.pageNumber());
+                new CustomMapleComment(registerUserInfoCommand.getName(), registerUserInfoCommand.getPageNumber());
         Assert.isTrue(customComment.equalsComment(otpNumber), "OTP 번호가 일치하지 않습니다.");
     }
 }
