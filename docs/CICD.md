@@ -31,25 +31,34 @@ docker pull jenkins/jenkins:lts
 
 #### git 연동
 - synology https 설정
-- github token 발급 (https://kitty-geno.tistory.com/88)
-  - token : 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 (90 days)
-- github webhook 등록
-  - https://jangdonggyu.synology.me:49998/github-webhook/
-  - application/x-www-form-urlencoded
-  - Secret (x)
-  - Enable SSL verification
-  - Just the push event
+  - github token 발급 (https://kitty-geno.tistory.com/88)
+    - token : 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 (90 days)
+  - github webhook 등록
+    - https://jangdonggyu.synology.me:49998/github-webhook/
+    - application/x-www-form-urlencoded
+    - Secret (x)
+    - Enable SSL verification
+    - Just the push event
+- Jenkins Server (docker)
+  - apt-get update && apt-get upgrade 
+  - apt-get install openjdk-17-jdk
 - Jenkins 설정
-- GitHub project : https://github.com/EastStar1129/maple/
-- Repository URL : https://github.com/EastStar1129/maple.git
-- Branch : develop
-- 빌드유발 > GitHub hook trigger for GITScm polling
-- 아래의 token 에 대한 slack 인증 추가
-- 빌드 > slack
-  - 하위도메인 : workspace name
-  - slack channel : #개발자
-  - 생성한 계정
-  - build fail, success 시 send message of slack 
+  - GitHub project : https://github.com/EastStar1129/maple/
+  - Repository URL : https://github.com/EastStar1129/maple.git
+  - Build step > execute shell > ./gradlew clean build jacocoTestCoverageVerification
+  - Branch : develop
+  - 빌드유발 > GitHub hook trigger for GITScm polling
+  - 아래의 token 에 대한 slack 인증 추가
+  - 빌드 > slack
+    - 하위도메인 : workspace name
+    - slack channel : #개발자
+    - 생성한 계정
+    - build fail, success 시 send message of slack 
+  - JDK 설정 
+    - Global Tool Configuration
+    - ADD JDK 
+      - No install 
+      - PATH : /usr/lib/jvm/java-17-openjdk-amd64 
 - Slack 설정
-- 앱 > Jenkins CI 설치 > Workspace(하위도메인), token 저장
-- ![img.png](img.png)
+  - 앱 > Jenkins CI 설치 > Workspace(하위도메인), token 저장
+  - ![img.png](img.png)
