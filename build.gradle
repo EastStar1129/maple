@@ -70,11 +70,6 @@ test {
     useJUnitPlatform()
 }
 
-test {
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/jacoco.exec")
-    }
-}
 /*
 task testCoverage(type: Test) {
     group 'verification'
