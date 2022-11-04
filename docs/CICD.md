@@ -52,4 +52,4 @@ docker pull jenkins/jenkins:lts
   - build fail, success 시 send message of slack 
 - Slack 설정
 - 앱 > Jenkins CI 설치 > Workspace(하위도메인), token 저장
-   
+- ![img.png](img.png)
