@@ -13,9 +13,9 @@ public class WriteCommentDTO {
 
     @NotNull
     @Positive
-    Long characterId;
+    private Long characterId;
 
     @NotNull
     @Length(min = 1, max = 4000)
-    String comment;
+    private String comment;
 }

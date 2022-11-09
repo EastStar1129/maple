@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.nexon.maple.comment.repository.CommentDao">
+<mapper namespace="com.nexon.maple.config.repository.CommentDao">
 
     <!-- 캐릭터 정보 조회 -->
     <select id="findByCharacterId" parameterType="Long" resultType="com.nexon.maple.comment.entity.CommentInfo">

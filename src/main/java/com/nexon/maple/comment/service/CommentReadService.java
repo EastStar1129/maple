@@ -2,7 +2,7 @@ package com.nexon.maple.comment.service;
 
 import com.nexon.maple.comment.dto.ResponseCommentInfoDTO;
 import com.nexon.maple.comment.entity.CommentInfo;
-import com.nexon.maple.comment.repository.CommentDao;
+import com.nexon.maple.config.repository.CommentDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -29,6 +29,6 @@ public class CommentController {
     @PostMapping(value = "/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> saveComment(Principal principal, @RequestBody WriteCommentDTO writeComment) {
         commentWriteService.saveComment(principal, writeComment);
-        return ResponseEntity.ok().body(ResponseDTO.ofSuccess(""));
+        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("댓글이 작성되었습니다."));
     }
 }

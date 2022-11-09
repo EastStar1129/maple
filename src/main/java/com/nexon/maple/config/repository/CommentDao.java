@@ -1,4 +1,4 @@
-package com.nexon.maple.comment.repository;
+package com.nexon.maple.config.repository;
 
 import com.nexon.maple.comment.entity.CommentInfo;
 import org.apache.ibatis.annotations.Mapper;

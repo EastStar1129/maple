@@ -32,6 +32,7 @@ dependencies {
 
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //lombok
     annotationProcessor 'org.projectlombok:lombok'
@@ -48,6 +49,7 @@ dependencies {
 
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
 
     //jwt
@@ -125,8 +127,9 @@ jacocoTestCoverageVerification {
 
             //제외 대상
             excludes = [
-                    '*.config.*.*.*',
-                    '*.Response*DTO'
+                    '**.config.*.*.*',
+                    '**.dto.*',
+                    '**.type.*'
             ]
         }
     }

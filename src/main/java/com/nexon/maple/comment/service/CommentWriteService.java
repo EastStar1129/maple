@@ -2,7 +2,7 @@ package com.nexon.maple.comment.service;
 
 import com.nexon.maple.comment.dto.WriteCommentDTO;
 import com.nexon.maple.comment.entity.CommentInfo;
-import com.nexon.maple.comment.repository.CommentDao;
+import com.nexon.maple.config.repository.CommentDao;
 import com.nexon.maple.userInfo.dto.ResponseUserInfoDTO;
 import com.nexon.maple.userInfo.service.UserInfoReadService;
 import lombok.RequiredArgsConstructor;

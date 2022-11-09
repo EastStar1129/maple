@@ -15,5 +15,6 @@ public class CharacterInfoReadService {
                 .name(userName)
                 .build();
 
-        return characterInfoDao.findByUserName(characterInfo);    }
+        return characterInfoDao.findByUserName(characterInfo);
+    }
 }
