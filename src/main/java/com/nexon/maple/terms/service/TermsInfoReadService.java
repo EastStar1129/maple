@@ -19,7 +19,7 @@ public class TermsInfoReadService {
         List<ResponseTermsInfoDTO> responseList = new ArrayList<>();
 
         for(TermsInfo termsInfo: list) {
-            responseList.add(new ResponseTermsInfoDTO(termsInfo));
+            responseList.add(ResponseTermsInfoDTO.of(termsInfo));
         }
 
         return responseList;

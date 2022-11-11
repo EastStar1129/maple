@@ -26,4 +26,12 @@ public class TermsAgreeInfo {
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
         this.deletedAt = deletedAt;
     }
+
+    public static TermsAgreeInfo ofAgree(Long terms, Long userId) {
+        return TermsAgreeInfo.builder()
+                .userId(userId)
+                .termsCode(terms)
+                .agreeYn("Y")
+                .build();
+    }
 }

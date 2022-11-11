@@ -1,6 +1,5 @@
 package com.nexon.maple.otp.entity;
 
-import com.nexon.maple.userInfo.entity.UserName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,18 +18,17 @@ public class Otp {
     private LocalDateTime createdAt;
     private Integer minute = 3;
 
-    public static final int OTP_NUMBER_LENGTH = 8;
+    private static final int OTP_NUMBER_LENGTH = 8;
 
     @Builder
-    public Otp(Long idx, String userName, String otpNumber, LocalDateTime createdAt) {
+    private Otp(Long idx, String userName, String otpNumber, LocalDateTime createdAt) {
         this.idx = idx;
-        this.userName = new UserName(userName).getUserName();
-        validateOtpNumber(otpNumber);
+        this.userName = userName;
         this.otpNumber = otpNumber == null ? makeOtpNumber(OTP_NUMBER_LENGTH) : otpNumber;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
-    private void validateOtpNumber(String otpNumber) {
+    private static void validateOtpNumber(String otpNumber) {
         if(Objects.isNull(otpNumber)) {
             return;
         }
@@ -58,5 +56,20 @@ public class Otp {
 
     private char add(int a, int b) {
         return (char) (a + b);
+    }
+
+    public static Otp of(String userName) {
+        return Otp.builder()
+                .userName(userName)
+                .build();
+    }
+
+    public static Otp of(String userName, String otpNumber) {
+        validateOtpNumber(otpNumber);
+
+        return Otp.builder()
+                .userName(userName)
+                .userName(otpNumber)
+                .build();
     }
 }

@@ -1,12 +1,12 @@
 package com.nexon.maple.character.entity;
 
+import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -40,13 +40,30 @@ public class CharacterInfo {
         this.experience = experience;
         this.popularity = popularity;
         this.guildName = guildName;
-        /*
-            TODO createAt 공통로직 추출가능한가?
-         */
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
     private void validateNull(String name) {
         Assert.notNull(name, "캐릭터 정보가 존재하지 않습니다.");
+    }
+
+    public static CharacterInfo of(String name) {
+        return CharacterInfo.builder()
+                .name(name)
+                .build();
+    }
+    public static CharacterInfo of(MapleCharacter mapleCharacter) {
+        return CharacterInfo.builder()
+                .image(mapleCharacter.getImage())
+                .characterRank(mapleCharacter.getRank())
+                .rankMove(mapleCharacter.getRankMove())
+                .name(mapleCharacter.getUserName())
+                .job1(mapleCharacter.getJob1())
+                .job2(mapleCharacter.getJob2())
+                .characterLevel(mapleCharacter.getLevel())
+                .experience(mapleCharacter.getExperience())
+                .popularity(mapleCharacter.getPopularity())
+                .guildName(mapleCharacter.getGuildName())
+                .build();
     }
 }

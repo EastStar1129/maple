@@ -22,24 +22,35 @@ public class UserInfo {
     private static final Long PASSWORD_MAX_LENGTH = 15L;
 
     @Builder
-    public UserInfo(Long id, String password, String name, String gradeCode, LocalDateTime createdAt) {
+    private UserInfo(Long id, String password, String name, String gradeCode, LocalDateTime createdAt) {
         this.id = id;
 
-        validatePassword(password);
-        this.name = new UserName(name).getUserName();
+        this.name = name;
         this.password = password;
 
         this.gradeCode = gradeCode == null ? GradeCode.ROLE_USER.getTitle() : gradeCode;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
-    public void encryptPassword(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.password = bCryptPasswordEncoder.encode(password);
-    }
-
-    private void validatePassword(String password) {
+    private static void validatePassword(String password) {
         Assert.notNull(password, "패스워드가 입력되지 않았습니다.");
         Assert.isTrue(password.length() >= PASSWORD_MIN_LENGTH, "최소 길이 미만입니다.");
         Assert.isTrue(password.length() <= PASSWORD_MAX_LENGTH, "최대 길이를 초과했습니다.");
+    }
+
+    public static void validation(String password, String name) {
+        UserName.of(name);
+        Assert.notNull(password, "패스워드가 입력되지 않았습니다.");
+        Assert.isTrue(password.length() >= PASSWORD_MIN_LENGTH, "최소 길이 미만입니다.");
+        Assert.isTrue(password.length() <= PASSWORD_MAX_LENGTH, "최대 길이를 초과했습니다.");
+    }
+
+    public static UserInfo of(String password, String name, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        validatePassword(password);
+
+        return UserInfo.builder()
+                .name(UserName.of(name).getUserName())
+                .password(bCryptPasswordEncoder.encode(password))
+                .build();
     }
 }

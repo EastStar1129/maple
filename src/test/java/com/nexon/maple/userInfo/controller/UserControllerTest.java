@@ -11,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -47,13 +49,15 @@ class UserControllerTest {
         input.put("terms", List.of("1"));
 
         //when
-        mockMvc.perform(MockMvcRequestBuilders.post(url)
-                        .content(objectMapper.writeValueAsString(input))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
-                .andDo(MockMvcResultHandlers.print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(url)
+                .content(objectMapper.writeValueAsString(input))
+                .contentType(MediaType.APPLICATION_JSON);
+        ResultActions resultActions = mockMvc.perform(mockHttpServletRequestBuilder);
 
         //then
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
+                .andDo(MockMvcResultHandlers.print());
     }
 }

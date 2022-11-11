@@ -18,12 +18,12 @@ import javax.validation.constraints.NotNull;
 public class CharacterInfoController {
     private final SelectCharacterInfoService selectCharacterInfoService;
 
-    @GetMapping("/{userName}/character")
+    @GetMapping("/{characterName}/character")
     public ResponseEntity<ResponseDTO> selectCharacter(
             @NotNull(message = "이름은 필수 값입니다.")
             @Length(min = 2, max = 12, message = "이름의 최소길이는 2자리에서 12자리입니다.")
-            @PathVariable("userName") String userName) {
-        var body = selectCharacterInfoService.select(userName);
+            @PathVariable("characterName") String characterName) {
+        var body = selectCharacterInfoService.findCharacter(characterName);
         return ResponseEntity.ok().body(ResponseDTO.ofSuccess("조회가 완료되었습니다.", body));
     }
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class SelectCharacterInfoService {
@@ -15,64 +17,25 @@ public class SelectCharacterInfoService {
     private final CharacterInfoWriteService characterInfoWriteService;
 
     @Transactional
-    public ResponseCharacterInfoDTO select(String userName) {
-        /*
-            1. DB 조회
-            2. 조회 데이터가 없는 경우 크롤링
-            3. 크롤링 데이터가 있으면 저장
-         */
-        // 1
-        var characterInfo = characterInfoReadService.select(userName);
-        if(characterInfo != null) {
-            return ofResponseCharacterInfo(characterInfo);
+    public ResponseCharacterInfoDTO findCharacter(String characterName) {
+        // 1. DB 조회
+        CharacterInfo characterInfo = characterInfoReadService.select(characterName);
+        if(Objects.nonNull(characterInfo)) {
+            return ResponseCharacterInfoDTO.of(characterInfo);
         }
 
-        // 2
-        MapleCharacter mapleCharacter = getMapleCharacter(userName);
-        if(mapleCharacter == null) {
+        // 2. 조회 데이터가 없는 경우 크롤링
+        MapleCharacter mapleCharacter = getMapleCharacter(characterName);
+        if(Objects.isNull(mapleCharacter)) {
             return null;
         }
 
-        // 3
-        var saveCharacterInfo = ofCharacterInfo(mapleCharacter);
-        characterInfoWriteService.save(saveCharacterInfo);
-
-        return ofResponseCharacterInfo(saveCharacterInfo);
-    }
-
-    private CharacterInfo ofCharacterInfo(MapleCharacter mapleCharacter) {
-        CharacterInfo characterInfo = CharacterInfo.builder()
-                .image(mapleCharacter.getImage())
-                .characterRank(mapleCharacter.getRank())
-                .rankMove(mapleCharacter.getRankMove())
-                .name(mapleCharacter.getUserName())
-                .job1(mapleCharacter.getJob1())
-                .job2(mapleCharacter.getJob2())
-                .characterLevel(mapleCharacter.getLevel())
-                .experience(mapleCharacter.getExperience())
-                .popularity(mapleCharacter.getPopularity())
-                .guildName(mapleCharacter.getGuildName())
-                .build();
-        return characterInfo;
+        // 3. 크롤링 데이터가 있으면 저장
+        CharacterInfo saveCharacterInfo = characterInfoWriteService.save(mapleCharacter);
+        return ResponseCharacterInfoDTO.of(saveCharacterInfo);
     }
 
     private MapleCharacter getMapleCharacter(String userName) {
         return new CustomMapleCharacter(userName).getMapleCharacter();
-    }
-
-    public ResponseCharacterInfoDTO ofResponseCharacterInfo(CharacterInfo characterInfo) {
-        return ResponseCharacterInfoDTO.builder()
-                .id(characterInfo.getId())
-                .image(characterInfo.getImage())
-                .rank(characterInfo.getCharacterRank())
-                .rankMove(characterInfo.getRankMove())
-                .userName(characterInfo.getName())
-                .job1(characterInfo.getJob1())
-                .job2(characterInfo.getJob2())
-                .level(characterInfo.getCharacterLevel())
-                .experience(characterInfo.getExperience())
-                .popularity(characterInfo.getPopularity())
-                .guildName(characterInfo.getGuildName())
-                .build();
     }
 }

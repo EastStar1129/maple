@@ -11,10 +11,7 @@ public class CharacterInfoReadService {
     private final CharacterInfoDao characterInfoDao;
 
     public CharacterInfo select(String userName) {
-        CharacterInfo characterInfo = CharacterInfo.builder()
-                .name(userName)
-                .build();
-
+        CharacterInfo characterInfo = CharacterInfo.of(userName);
         return characterInfoDao.findByUserName(characterInfo);
     }
 }

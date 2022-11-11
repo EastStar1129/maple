@@ -20,18 +20,10 @@ class UserInfoTest {
         String name = "캐릭터";
         String password = "password";
 
-        UserInfo userInfo = UserInfo.builder()
-                .name(name)
-                .password(password)
-                .build();
-
         //when
-        userInfo.encryptPassword(bCryptPasswordEncoder);
+        UserInfo userInfo = UserInfo.of(password, name, bCryptPasswordEncoder);
 
-        /*
-         * 코드는 옵션사항이다.
-         * 패스워드는 암호화되어 저장된다.
-         * */
+        //then
         assertAll(
                 () -> assertEquals(name, userInfo.getName()),
                 () -> assertTrue(bCryptPasswordEncoder.matches(password, userInfo.getPassword()))
@@ -49,23 +41,13 @@ class UserInfoTest {
         String password_pass = "123456789";
 
         //when-then
-
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class,
-                                () -> UserInfo.builder()
-                                        .name(name_pass)
-                                        .password(password)
-                                        .build()),
+                                () -> UserInfo.of(password, name_pass, bCryptPasswordEncoder)),
                 () -> assertThrows(IllegalArgumentException.class,
-                        () -> UserInfo.builder()
-                                .name(name_pass)
-                                .password(password2)
-                                .build()),
+                        () -> UserInfo.of(password2, name_pass, bCryptPasswordEncoder)),
                 () -> assertThrows(IllegalArgumentException.class,
-                        () -> UserInfo.builder()
-                                .name(name)
-                                .password(password_pass)
-                                .build())
+                        () -> UserInfo.of(password_pass, name, bCryptPasswordEncoder))
         );
     }
 

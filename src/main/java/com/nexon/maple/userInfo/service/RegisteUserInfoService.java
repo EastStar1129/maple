@@ -2,15 +2,14 @@ package com.nexon.maple.userInfo.service;
 
 import com.nexon.maple.otp.service.OtpReadService;
 import com.nexon.maple.terms.dto.ResponseTermsInfoDTO;
-import com.nexon.maple.terms.type.TermsType;
+import com.nexon.maple.terms.service.TermsAgreeInfoWriteService;
 import com.nexon.maple.terms.service.TermsInfoReadService;
-import com.nexon.maple.terms.service.TermsInfoWriteService;
+import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
 import com.nexon.maple.userInfo.dto.ResponseUserInfoDTO;
 import com.nexon.maple.userInfo.entity.UserInfo;
 import com.nexon.maple.util.maplestoryHomepage.CustomMapleComment;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -21,42 +20,22 @@ import java.util.List;
 @Service
 public class RegisteUserInfoService {
     private final TermsInfoReadService termsInfoReadService;
-    private final TermsInfoWriteService termsInfoWriteService;
+    private final TermsAgreeInfoWriteService termsAgreeInfoWriteService;
     private final UserInfoWriteService userInfoWriteService;
     private final UserInfoReadService userInfoReadService;
     private final OtpReadService otpReadService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public void regist(RegisterUserInfoDTO registerUserInfoDTO) {
-        /*
-            1. 데이터 검증
-            2. 검증
-            2-1. OTP 체크
-            2-2-1 OTP는 메이플스토리 게시글 댓글과 DB에 마지막 OTP번호와 비교
-            2-3. 약관동의 검사
-            3. 저장
-            3-1 회원가입
-            3-2 약관동의여부 저장
-         */
-        UserInfo userInfo = UserInfo.builder()
-                .name(registerUserInfoDTO.getName())
-                .password(registerUserInfoDTO.getPassword())
-                .build();
+        // 1. 데이터 검증
+        UserInfo.validation(registerUserInfoDTO.getPassword(), registerUserInfoDTO.getName());
 
-        //패스워드 암호화
-        userInfo.encryptPassword(bCryptPasswordEncoder);
-
-        //검증 로직
+        // 2. 비지니스 로직
         validationUserInfo(registerUserInfoDTO);
 
-        //저장
-        regist(registerUserInfoDTO, userInfo);
-    }
-
-    private void regist(RegisterUserInfoDTO registerUserInfoCommand, UserInfo userInfo) {
-        userInfoWriteService.regist(userInfo);
-        termsInfoWriteService.saveAllTermsInfo(registerUserInfoCommand.getTerms(), userInfo.getId());
+        // 3. 회원가입
+        UserInfo userInfo = userInfoWriteService.regist(registerUserInfoDTO);
+        termsAgreeInfoWriteService.saveAllTermsAgreeInfo(registerUserInfoDTO.getTerms(), userInfo.getId());
     }
 
     private void validationUserInfo(RegisterUserInfoDTO registerUserInfoCommand) {

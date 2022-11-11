@@ -12,8 +12,8 @@
         WHERE TYPE = #{value}
     </select>
 
-    <insert id="save" parameterType="com.nexon.maple.terms.entity.TermsAgreeInfo" useGeneratedKeys="true" keyProperty="idx">
-        INSERT INTO TERMS_AGREE_INFO(USER_ID, TERMS_CODE, AGREE_YN, CREATED_AT)
-        VALUES(#{userId}, #{termsCode}, #{agreeYn}, #{createdAt})
+    <insert id="save" parameterType="com.nexon.maple.terms.entity.TermsInfo" useGeneratedKeys="true" keyProperty="code">
+        INSERT INTO TERMS_INFO(TYPE, NAME, CONTENT, REQUIRED_TERMS)
+        VALUES(#{type}, #{name}, #{content}, #{requiredTerms})
     </insert>
 </mapper>
