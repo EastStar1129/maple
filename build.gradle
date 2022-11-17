@@ -126,9 +126,11 @@ jacocoTestCoverageVerification {
 
             //제외 대상
             excludes = [
+                    '**.MapleApplication',
                     '**.config.*.*.*',
                     '**.dto.*',
-                    '**.type.*'
+                    '**.type.*',
+                    '**.View*'
             ]
         }
     }

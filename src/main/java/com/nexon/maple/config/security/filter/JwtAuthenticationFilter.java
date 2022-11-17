@@ -68,16 +68,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         registerUserInfoDTO = om.readValue(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8),
                 LoginUserDTO.class);
 
-        UserInfo userInfo = UserInfo.builder()
-                .name(registerUserInfoDTO.getName())
-                .password(registerUserInfoDTO.getPassword())
-                .build();
+        UserInfo userInfo = UserInfo.of(registerUserInfoDTO.getPassword(), registerUserInfoDTO.getName());
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userInfo.getName(), userInfo.getPassword());
 
         return authenticationManager.authenticate(authenticationToken);
     }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException {

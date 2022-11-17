@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 @Mapper
 public interface CommentDao {
-    List<CommentInfo> findByCharacterId(Long characterId);
+    List<CommentInfo> findByCharacterName(String characterName);
     int save(CommentInfo commentInfo);
 }

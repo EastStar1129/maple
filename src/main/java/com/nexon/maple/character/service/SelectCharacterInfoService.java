@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -36,6 +37,10 @@ public class SelectCharacterInfoService {
     }
 
     private MapleCharacter getMapleCharacter(String userName) {
-        return new CustomMapleCharacter(userName).getMapleCharacter();
+        try {
+            return new CustomMapleCharacter(userName).build();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("메이플 캐릭터 조회 중 오류발생");
+        }
     }
 }

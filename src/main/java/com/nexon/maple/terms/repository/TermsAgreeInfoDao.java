@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface TermsAgreeInfoDao {
     int save(TermsAgreeInfo termsAgreeInfo);
+    int cancel(TermsAgreeInfo termsAgreeInfo);
 }

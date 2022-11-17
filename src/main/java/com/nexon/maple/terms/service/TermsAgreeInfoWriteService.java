@@ -22,10 +22,16 @@ public class TermsAgreeInfoWriteService {
     }
 
     @Transactional
-    public void saveTermsAgreeInfo(Long terms, Long userId) {
+    public Long saveTermsAgreeInfo(Long terms, Long userId) {
         TermsAgreeInfo termsAgreeInfo = TermsAgreeInfo.ofAgree(terms, userId);
         termsAgreeInfoDao.save(termsAgreeInfo);
         Assert.notNull(termsAgreeInfo.getIdx(), "약관동의여부가 저장되지 않았습니다.");
+        return termsAgreeInfo.getIdx();
+    }
 
+    @Transactional
+    public void cancelTermsAgree(Long idx) {
+        TermsAgreeInfo termsAgreeInfo = TermsAgreeInfo.ofCancel(idx);
+        Assert.isTrue(termsAgreeInfoDao.cancel(termsAgreeInfo) == 1, "약관정보가 수정되지 않았습니다.");
     }
 }

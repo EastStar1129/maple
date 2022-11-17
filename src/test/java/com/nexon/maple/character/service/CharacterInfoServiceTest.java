@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 @SpringBootTest
 @AutoConfigureMybatis
 class CharacterInfoServiceTest {
@@ -20,12 +22,12 @@ class CharacterInfoServiceTest {
 
     @BeforeEach
     @Transactional
-    void 캐릭터정보저장() {
+    void 캐릭터정보저장() throws IOException {
         //given
         String characterName = "구로5동호영";
 
         //when
-        MapleCharacter mapleCharacter = new CustomMapleCharacter(characterName).getMapleCharacter();
+        MapleCharacter mapleCharacter = new CustomMapleCharacter(characterName).build();
 
         //then
         characterInfoWriteService.save(mapleCharacter);

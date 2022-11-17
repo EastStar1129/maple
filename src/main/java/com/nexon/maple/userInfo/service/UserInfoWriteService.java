@@ -14,9 +14,12 @@ import org.springframework.util.Assert;
 public class UserInfoWriteService {
     private final UserInfoDao userInfoDao;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserInfoReadService userInfoReadService;
 
     @Transactional
     public UserInfo regist(RegisterUserInfoDTO registerUserInfoDTO){
+        userInfoReadService.validationDuplicate(registerUserInfoDTO.getName());
+
         UserInfo userInfo = UserInfo.of(registerUserInfoDTO.getPassword(), registerUserInfoDTO.getName(), bCryptPasswordEncoder);
         userInfoDao.save(userInfo);
         Assert.notNull(userInfo.getId(), "회원가입이 되지 않았습니다.");

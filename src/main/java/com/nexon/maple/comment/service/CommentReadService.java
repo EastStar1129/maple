@@ -13,8 +13,8 @@ import java.util.List;
 public class CommentReadService {
     private final CommentDao commentDao;
 
-    public List<ResponseCommentInfoDTO> selectComment(Long characterId) {
-        List<CommentInfo> commentInfoList = commentDao.findByCharacterId(characterId);
+    public List<ResponseCommentInfoDTO> selectComment(String characterName) {
+        List<CommentInfo> commentInfoList = commentDao.findByCharacterName(characterName);
 
         return ResponseCommentInfoDTO.ofList(commentInfoList);
     }

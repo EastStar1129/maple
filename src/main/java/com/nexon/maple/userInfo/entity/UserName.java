@@ -2,11 +2,9 @@ package com.nexon.maple.userInfo.entity;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 @Getter
-@NoArgsConstructor
 public class UserName {
     private String userName;
 

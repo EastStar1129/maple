@@ -1,10 +1,11 @@
 package com.nexon.maple.terms.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexon.maple.terms.dto.ResponseTermsInfoDTO;
 import com.nexon.maple.terms.type.TermsType;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
+import com.nexon.maple.userInfo.service.UserInfoReadService;
 import com.nexon.maple.userInfo.service.UserInfoWriteService;
+import com.nexon.maple.util.CustomBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.AutoConfigureMybatis;
@@ -12,9 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureMybatis
@@ -34,40 +36,62 @@ class TermsInfoServiceTest {
     @Autowired
     private UserInfoWriteService userInfoWriteService;
 
+    @Autowired
+    private UserInfoReadService userInfoReadService;
+
     @BeforeEach
     @Transactional
     void setUserAndTerms() {
-        Map<String, Object> input = new HashMap<>();
-        input.put("name", "GM");
-        input.put("password", "12341234");
-        input.put("otpNumber", "12341234");
-        input.put("pageNumber", 1L);
-        input.put("terms", List.of("1"));
+        //given
+        RegisterUserInfoDTO registerUserInfoDTO = CustomBean.ofRegisterUserInfoDTO("GM", "12341234");
 
-        //when
-        ObjectMapper om = new ObjectMapper();
-        RegisterUserInfoDTO registerUserInfoDTO = om.convertValue(input, RegisterUserInfoDTO.class);
-
+        //when-then
         code = termsInfoWriteService.saveLoginType("test", "test").getCode();
-        userId = userInfoWriteService.regist(registerUserInfoDTO).getId();
+        userId = CustomBean.회원가입(userInfoWriteService, userInfoReadService, registerUserInfoDTO).id();
     }
 
     @Test
     @Transactional
     void 동의이력_저장() {
+        //when
         termsAgreeInfoWriteService.saveTermsAgreeInfo(code, userId);
     }
 
     @Test
     @Transactional
+    void 동의취소() {
+        //given
+        Long idx = termsAgreeInfoWriteService.saveTermsAgreeInfo(code, userId);
+
+        //when-then
+        termsAgreeInfoWriteService.cancelTermsAgree(idx);
+    }
+
+    @Test
+    @Transactional
+    void 동의취소시_없는이력() {
+        //given
+        Long idx = 0L;
+
+        //when-then
+        assertThrows(IllegalArgumentException.class, () -> termsAgreeInfoWriteService.cancelTermsAgree(idx));
+    }
+
+
+    @Test
+    @Transactional
     void 동의이력_리스트_저장() {
+        //when
         termsAgreeInfoWriteService.saveAllTermsAgreeInfo(List.of(String.valueOf(code)), userId);
     }
 
     @Test
     @Transactional
     void 약관내역_조회() {
-        termsInfoReadService.selectTerms(TermsType.LOGIN.getTitle())
-                .contains(ResponseTermsInfoDTO.builder().code(code).build());
+        //given
+        List<ResponseTermsInfoDTO> list = termsInfoReadService.selectTerms(TermsType.LOGIN.getTitle());
+
+        //then
+        assertTrue(list.contains(ResponseTermsInfoDTO.builder().code(code).build()));
     }
 }

@@ -6,17 +6,17 @@
 <mapper namespace="com.nexon.maple.config.repository.CommentDao">
 
     <!-- 캐릭터 정보 조회 -->
-    <select id="findByCharacterId" parameterType="Long" resultType="com.nexon.maple.comment.entity.CommentInfo">
+    <select id="findByCharacterName" parameterType="String" resultType="com.nexon.maple.comment.entity.CommentInfo">
         SELECT
-            ID, CHARACTER_ID characterId, USER_ID userId, COMMENT, CREATED_AT createAt
+            ID, CHARACTER_NAME characterName, USER_ID userId, COMMENT, CREATED_AT createAt
         FROM COMMENT_INFO
-        WHERE CHARACTER_ID = #{value}
+        WHERE CHARACTER_NAME = #{value}
         ORDER BY CREATED_AT DESC
     </select>
 
     <insert id="save" parameterType="com.nexon.maple.comment.entity.CommentInfo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO COMMENT_INFO(CHARACTER_ID, USER_ID, COMMENT, CREATED_AT)
-        VALUES(#{characterId}, #{userId}, #{comment}, #{createdAt})
+        INSERT INTO COMMENT_INFO(CHARACTER_NAME, USER_ID, COMMENT, CREATED_AT)
+        VALUES(#{characterName}, #{userId}, #{comment}, #{createdAt})
     </insert>
 
 </mapper>

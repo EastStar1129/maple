@@ -10,4 +10,9 @@
         VALUES(#{userId}, #{termsCode}, #{agreeYn}, #{createdAt})
     </insert>
 
+    <update id="cancel" parameterType="com.nexon.maple.terms.entity.TermsAgreeInfo">
+        UPDATE TERMS_AGREE_INFO
+        SET DELETED_AT = #{deletedAt}
+        WHERE IDX = #{idx}
+    </update>
 </mapper>

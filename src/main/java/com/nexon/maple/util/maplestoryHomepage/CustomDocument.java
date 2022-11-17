@@ -1,52 +1,20 @@
 package com.nexon.maple.util.maplestoryHomepage;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class CustomDocument {
-    private Document document;
+public abstract class CustomDocument {
 
-    //header없이 호출한 URL에서 마지막으로 반환된 document 가져오기
-    public CustomDocument(String URL) {
-        try {
-            Connection conn = Jsoup.connect(URL);
-            this.document = conn.get();
-        } catch (IOException e) {
-            this.document = null;
-        }
+    public Document connect(String URL) throws IOException {
+        return Jsoup.connect(URL).get();
     }
 
-    //header를 추가한 URL에서 마지막으로 반환된 document 가져오기
-    //javascript의 ajax기능
-    public CustomDocument(String URL, Map<String, String> headers) {
-        try {
-            Connection conn = Jsoup.connect(URL).headers(headers);
-            this.document = conn.get();
-        } catch (IOException e) {
-            this.document = null;
-        }
+    public Document connect(String URL, Map<String, String> headers) throws IOException {
+        return Jsoup.connect(URL).headers(headers).get();
     }
 
-    public boolean isDocument() {
-        if(this.document == null) return true;
-        return false;
-    }
-
-    public Document getDocument() {
-        return this.document;
-    }
-
-    public Elements getElements(String selector) {
-        if(this.document == null) {
-            return null;
-        }
-
-        return this.document.select(selector);
-    }
-
+    public abstract Object build() throws IOException;
 }

@@ -40,7 +40,7 @@ public class CharacterInfo {
         this.experience = experience;
         this.popularity = popularity;
         this.guildName = guildName;
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+        this.createdAt = createdAt;
     }
 
     private void validateNull(String name) {
@@ -50,20 +50,22 @@ public class CharacterInfo {
     public static CharacterInfo of(String name) {
         return CharacterInfo.builder()
                 .name(name)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
     public static CharacterInfo of(MapleCharacter mapleCharacter) {
         return CharacterInfo.builder()
-                .image(mapleCharacter.getImage())
-                .characterRank(mapleCharacter.getRank())
-                .rankMove(mapleCharacter.getRankMove())
-                .name(mapleCharacter.getUserName())
-                .job1(mapleCharacter.getJob1())
-                .job2(mapleCharacter.getJob2())
-                .characterLevel(mapleCharacter.getLevel())
-                .experience(mapleCharacter.getExperience())
-                .popularity(mapleCharacter.getPopularity())
-                .guildName(mapleCharacter.getGuildName())
+                .image(mapleCharacter.image())
+                .characterRank(mapleCharacter.rank())
+                .rankMove(mapleCharacter.rankMove())
+                .name(mapleCharacter.userName())
+                .job1(mapleCharacter.job1())
+                .job2(mapleCharacter.job2())
+                .characterLevel(mapleCharacter.level())
+                .experience(mapleCharacter.experience())
+                .popularity(mapleCharacter.popularity())
+                .guildName(mapleCharacter.guildName())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

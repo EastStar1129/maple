@@ -28,8 +28,8 @@ public class UserInfo {
         this.name = name;
         this.password = password;
 
-        this.gradeCode = gradeCode == null ? GradeCode.ROLE_USER.getTitle() : gradeCode;
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+        this.gradeCode = gradeCode;
+        this.createdAt = createdAt;
     }
 
     private static void validatePassword(String password) {
@@ -40,9 +40,7 @@ public class UserInfo {
 
     public static void validation(String password, String name) {
         UserName.of(name);
-        Assert.notNull(password, "패스워드가 입력되지 않았습니다.");
-        Assert.isTrue(password.length() >= PASSWORD_MIN_LENGTH, "최소 길이 미만입니다.");
-        Assert.isTrue(password.length() <= PASSWORD_MAX_LENGTH, "최대 길이를 초과했습니다.");
+        validatePassword(password);
     }
 
     public static UserInfo of(String password, String name, BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -51,6 +49,19 @@ public class UserInfo {
         return UserInfo.builder()
                 .name(UserName.of(name).getUserName())
                 .password(bCryptPasswordEncoder.encode(password))
+                .gradeCode(GradeCode.ROLE_USER.getTitle())
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static UserInfo of(String password, String name) {
+        validatePassword(password);
+
+        return UserInfo.builder()
+                .name(name)
+                .password(password)
+                .gradeCode(GradeCode.ROLE_USER.getTitle())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

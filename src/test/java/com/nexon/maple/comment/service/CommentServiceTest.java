@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexon.maple.character.service.CharacterInfoWriteService;
 import com.nexon.maple.comment.dto.WriteCommentDTO;
 import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
+import com.nexon.maple.userInfo.service.UserInfoReadService;
 import com.nexon.maple.userInfo.service.UserInfoWriteService;
+import com.nexon.maple.util.CustomBean;
 import com.nexon.maple.util.maplestoryHomepage.CustomMapleCharacter;
 import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
 import io.jsonwebtoken.lang.Assert;
@@ -15,17 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMybatis
 class CommentServiceTest {
-    private Long characterId = 1L;
+    private String characterName;
 
     @Autowired
     private UserInfoWriteService userInfoWriteService;
+
+    @Autowired
+    private UserInfoReadService userInfoReadService;
 
     @Autowired
     private CharacterInfoWriteService characterInfoWriteService;
@@ -38,25 +43,18 @@ class CommentServiceTest {
 
     @BeforeEach
     @Transactional
-    void setUser() {
+    void setUser() throws IOException {
         //given
-        String characterName = "구로5동호영";
-
-        Map<String, Object> input = new HashMap<>();
-        input.put("name", "GM");
-        input.put("password", "12341234");
-        input.put("otpNumber", "12341234");
-        input.put("pageNumber", 1L);
-        input.put("terms", List.of("1"));
-        ObjectMapper om = new ObjectMapper();
-        RegisterUserInfoDTO registerUserInfoDTO = om.convertValue(input, RegisterUserInfoDTO.class);
+        String userName = "GM";
+        String characterName = "구로5동혀로";
+        RegisterUserInfoDTO registerUserInfoDTO = CustomBean.ofRegisterUserInfoDTO(userName, "12341234");
 
         //when
-        MapleCharacter mapleCharacter = new CustomMapleCharacter(characterName).getMapleCharacter();
+        MapleCharacter mapleCharacter = new CustomMapleCharacter(characterName).build();
 
         //then
-        userInfoWriteService.regist(registerUserInfoDTO).getId();
-        characterId = characterInfoWriteService.save(mapleCharacter).getId();
+        CustomBean.회원가입(userInfoWriteService, userInfoReadService, registerUserInfoDTO);
+        this.characterName = characterInfoWriteService.save(mapleCharacter).getName();
     }
 
     @Test
@@ -65,7 +63,7 @@ class CommentServiceTest {
         //given
         String userName = "GM";
         Map<String, Object> input = new HashMap<>();
-        input.put("characterId", characterId);
+        input.put("characterName", characterName);
         input.put("comment", "댓글등록 테스트");
         WriteCommentDTO writeCommentDTO = new ObjectMapper().convertValue(input, WriteCommentDTO.class);
 
@@ -73,7 +71,7 @@ class CommentServiceTest {
         commentWriteService.saveComment(userName, writeCommentDTO);
 
         //then
-        Assert.notEmpty(commentReadService.selectComment(characterId));
+        Assert.notEmpty(commentReadService.selectComment(characterName));
     }
 
 }

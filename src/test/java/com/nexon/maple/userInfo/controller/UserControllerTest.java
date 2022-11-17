@@ -1,7 +1,9 @@
 package com.nexon.maple.userInfo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nexon.maple.userInfo.dto.RegisterUserInfoDTO;
 import com.nexon.maple.userInfo.service.RegisteUserInfoService;
+import com.nexon.maple.util.CustomBean;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -41,17 +39,12 @@ class UserControllerTest {
     public void 회원가입() throws Exception {
         //given
         String url = "/users";
-        Map<String, Object> input = new HashMap<>();
-        input.put("name", "test");
-        input.put("password", "12341234");
-        input.put("otpNumber", "12341234");
-        input.put("pageNumber", 1L);
-        input.put("terms", List.of("1"));
+        RegisterUserInfoDTO registerUserInfoDTO = CustomBean.ofRegisterUserInfoDTO("GM", "12341234");
 
         //when
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(url)
-                .content(objectMapper.writeValueAsString(input))
+                .content(objectMapper.writeValueAsString(registerUserInfoDTO))
                 .contentType(MediaType.APPLICATION_JSON);
         ResultActions resultActions = mockMvc.perform(mockHttpServletRequestBuilder);
 

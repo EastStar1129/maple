@@ -40,7 +40,6 @@ class OtpServiceTest {
         String userName = UserName.of("구로").getUserName();
 
         //when
-        OTP발급(userName);
         String otpNumber = OTP발급(userName);
         String otpNumberSelect = OTP조회(userName);
 

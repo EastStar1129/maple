@@ -34,7 +34,7 @@ class UserInfoTest {
     public void 이름은12자리_패스워드는8에서15자리_실패_테스트() {
         //given
         String name = "1234567890123";
-        String password = "123456789123456789";
+        String password = "123456789123456789123456789123456789";
         String password2 = "12";
 
         String name_pass = "123456";
@@ -42,6 +42,12 @@ class UserInfoTest {
 
         //when-then
         assertAll(
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> UserInfo.validation(password, name_pass)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> UserInfo.validation(password2, name_pass)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> UserInfo.validation(password_pass, name)),
                 () -> assertThrows(IllegalArgumentException.class,
                                 () -> UserInfo.of(password, name_pass, bCryptPasswordEncoder)),
                 () -> assertThrows(IllegalArgumentException.class,

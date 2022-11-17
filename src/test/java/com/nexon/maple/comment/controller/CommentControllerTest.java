@@ -1,14 +1,11 @@
 package com.nexon.maple.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nexon.maple.comment.service.CommentWriteService;
-import com.nexon.maple.config.security.jwt.JwtToken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,22 +22,17 @@ import java.util.Map;
 @SpringBootTest
 @AutoConfigureMockMvc
 class CommentControllerTest {
+    private static final String CHARACTER_NAME = "구로5동혀로";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private JwtToken jwtToken;
-
-    @Autowired
     private ObjectMapper objectMapper;
-
-    @MockBean
-    private CommentWriteService commentWriteService;
 
     @Test
     public void 댓글조회() throws Exception{
-        String url = "/1/comments";
+        String url = "/" + CHARACTER_NAME + "/comments";
         mockMvc.perform(MockMvcRequestBuilders.get(url))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
@@ -53,7 +45,7 @@ class CommentControllerTest {
         //given
         String url = "/comments";
         Map<String, String> input = new HashMap<>();
-        input.put("id", "1");
+        input.put("characterName", CHARACTER_NAME);
         input.put("comment", "댓글작성 테스트");
 
         //when-then
