@@ -48,6 +48,7 @@ dependencies {
 
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
 
     //jwt
@@ -125,8 +126,11 @@ jacocoTestCoverageVerification {
 
             //제외 대상
             excludes = [
-                    '*.config.*.*.*',
-                    '*.Response*DTO'
+                    '**.MapleApplication',
+                    '**.config.*.*.*',
+                    '**.dto.*',
+                    '**.type.*',
+                    '**.View*'
             ]
         }
     }

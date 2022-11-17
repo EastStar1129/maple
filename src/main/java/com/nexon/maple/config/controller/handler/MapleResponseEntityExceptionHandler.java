@@ -14,6 +14,7 @@ public class MapleResponseEntityExceptionHandler {
     //정의되지 않은 Exception
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ResponseDTO> handleAllExceptions(Exception ex) {
+        ex.printStackTrace();
         ResponseDTO exceptionResponse = ResponseDTO.ofFail(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
     }

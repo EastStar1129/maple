@@ -1,24 +1,68 @@
 package com.nexon.maple.util.maplestoryHomepage;
 
-import com.nexon.maple.util.maplestoryHomepage.object.otpComment;
+import com.nexon.maple.util.maplestoryHomepage.object.MapleComment;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class CustomMapleComment implements otpComment {
+public class CustomMapleComment extends CustomDocument {
     private static final String PREFIX_URL = "https://maplestory.nexon.com/Community/Free/326252/comment?page=";
-
-    private HashMap<String, String> commentMap = new HashMap<>();
+    private final String name;
+    private final Long pageNumber;
 
     //메이플 게시판 댓글 가져오기
     public CustomMapleComment(String name, Long pageNumber) {
-        String url = PREFIX_URL + pageNumber;
-        setComment(new CustomDocument(url, getHeader()), name);
+        this.name = name;
+        this.pageNumber = pageNumber;
     }
 
-    private HashMap<String, String> getHeader() {
+    @Override
+    public MapleComment build() throws IOException {
+        String url = PREFIX_URL + pageNumber;
+        HashMap headers = getHeaders();
+
+        Document document = connect(url, headers);
+        Element element = parseComment(document);
+        return ofMapleComment(element);
+    }
+
+    private Element parseComment(Document document) {
+        Elements commentElements = document.select("div.reply");
+
+        return commentElements
+                .stream()
+                .filter(element -> commentFilter(element))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private MapleComment ofMapleComment(Element commentElement) {
+        if(Objects.isNull(commentElement)) {
+            return null;
+        }
+
+        String commentSn = commentElement.selectFirst("input[name=comment_sn]").attr("value");
+        String parentCommentSn = commentElement.selectFirst("input[name=parent_comment_sn]").attr("value");
+        String commentWriterName = commentElement.selectFirst("input[name=comment_writer_name]").attr("value");
+        String emoticonNo = commentElement.selectFirst("input[name=emoticon_no]").attr("value");
+        String imageSn = commentElement.selectFirst("input[name=image_sn]").attr("value");
+        String commentContent = commentElement.selectFirst("textarea[name=comment_content]").text();
+        String worldImg = commentElement.selectFirst("img[alt=캐릭터 아이콘]").attr("src");
+        return new MapleComment(commentSn, parentCommentSn, commentWriterName, emoticonNo, imageSn, commentContent, worldImg);
+    }
+
+    private boolean commentFilter(Element commentElement) {
+        return commentElement
+                .selectFirst("input[name=comment_writer_name]")
+                .attr("value")
+                .equals(name);
+    }
+
+    private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept", "*/*");
         headers.put("Accept-Encoding", "gzip, deflate, br");
@@ -36,30 +80,5 @@ public class CustomMapleComment implements otpComment {
         headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36");
         headers.put("X-Requested-With", "XMLHttpRequest");
         return headers;
-    }
-
-    private void setComment(CustomDocument customDocument, String name) {
-        Elements commentElements = customDocument.getElements("div.reply");
-        for(Element commentElement : commentElements) {
-            Element userName = commentElement.selectFirst("input[name=comment_writer_name]");
-            String value = userName.attr("value");
-            if(value.equals(name)) {
-                commentMap.put("comment_sn", commentElement.selectFirst("input[name=comment_sn]").attr("value"));
-                commentMap.put("parent_comment_sn", commentElement.selectFirst("input[name=parent_comment_sn]").attr("value"));
-                commentMap.put("comment_writer_name", commentElement.selectFirst("input[name=comment_writer_name]").attr("value"));
-                commentMap.put("emoticon_no", commentElement.selectFirst("input[name=emoticon_no]").attr("value"));
-                commentMap.put("image_sn", commentElement.selectFirst("input[name=image_sn]").attr("value"));
-                commentMap.put("comment_content", commentElement.selectFirst("textarea[name=comment_content]").text());
-                commentMap.put("world_img", commentElement.selectFirst("img[alt=캐릭터 아이콘]").attr("src"));
-                break;
-            }
-        }
-    }
-
-    @Override
-    public boolean equalsComment(String otpNumber) {
-        String otpComment = commentMap.get("comment_content");
-
-        return Objects.nonNull(otpComment) && otpComment.equals(otpNumber);
     }
 }

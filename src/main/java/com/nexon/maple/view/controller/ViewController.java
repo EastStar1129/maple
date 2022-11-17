@@ -1,4 +1,4 @@
-package com.nexon.maple.view;
+package com.nexon.maple.view.controller;
 
 import com.nexon.maple.config.security.jwt.JwtToken;
 import com.nexon.maple.view.service.ViewService;

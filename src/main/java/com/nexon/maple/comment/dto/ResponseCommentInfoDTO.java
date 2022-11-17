@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
@@ -21,9 +20,9 @@ public class ResponseCommentInfoDTO {
     @Builder
     public ResponseCommentInfoDTO(Long id, Long userId, String comment, LocalDateTime createdAt) {
         this.id = id;
-        this.userId = Objects.requireNonNull(userId);
-        this.comment = Objects.requireNonNull(comment);
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+        this.userId = userId;
+        this.comment = comment;
+        this.createdAt = createdAt;
     }
 
     public static List<ResponseCommentInfoDTO> ofList(List<CommentInfo> commentInfoList) {

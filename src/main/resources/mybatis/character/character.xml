@@ -13,6 +13,8 @@
                EXPERIENCE, POPULARITY, GUILD_NAME guildName, CREATED_AT createdAt
         FROM CHARACTER_INFO
         WHERE NAME = #{name}
+        ORDER BY CREATED_AT
+        DESC LIMIT 1
     </select>
 
     <!-- 캐릭터 정보 등록 -->

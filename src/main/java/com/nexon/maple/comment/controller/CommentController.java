@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.security.Principal;
 
 @RequiredArgsConstructor
@@ -21,14 +20,14 @@ public class CommentController {
     private final CommentReadService commentReadService;
     private final CommentWriteService commentWriteService;
 
-    @GetMapping("{characterId}/comments")
-    public ResponseEntity<ResponseDTO> selectComment(@PathVariable("characterId") @NotNull @Positive Long characterId) {
-        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("조회가 완료되었습니다.", commentReadService.selectComment(characterId)));
+    @GetMapping("{characterName}/comments")
+    public ResponseEntity<ResponseDTO> selectComment(@PathVariable("characterName") @NotNull String characterName) {
+        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("조회가 완료되었습니다.", commentReadService.selectComment(characterName)));
     }
 
     @PostMapping(value = "/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> saveComment(Principal principal, @RequestBody WriteCommentDTO writeComment) {
-        commentWriteService.saveComment(principal, writeComment);
-        return ResponseEntity.ok().body(ResponseDTO.ofSuccess(""));
+        commentWriteService.saveComment(principal.getName(), writeComment);
+        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("댓글이 작성되었습니다."));
     }
 }

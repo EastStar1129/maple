@@ -20,6 +20,6 @@ public class UserController {
     public ResponseEntity<ResponseDTO> register(@RequestBody RegisterUserInfoDTO registerUserInfoDTO) {
         registeUserInfoService.regist(registerUserInfoDTO);
 
-        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("회원가입이 완료되었습니다. 로그인해주세요.", null));
+        return ResponseEntity.ok().body(ResponseDTO.ofSuccess("회원가입이 완료되었습니다. 로그인해주세요.", registerUserInfoDTO.getName()));
     }
 }

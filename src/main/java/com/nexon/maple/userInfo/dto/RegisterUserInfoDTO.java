@@ -14,20 +14,20 @@ public class RegisterUserInfoDTO {
 
     @NotNull
     @Length(min = 2, max = 12)
-    String name;
+    private String name;
 
     @NotNull
     @Length(min = 8, max = 20)
-    String password;
+    private String password;
 
     @NotNull
     @Length(min = 8, max = 8)
-    String otpNumber;
+    private String otpNumber;
 
     @NotNull
     @Positive
-    Long pageNumber;
+    private Long pageNumber;
 
-    List<String> terms;
+    private List<String> terms;
 
 }

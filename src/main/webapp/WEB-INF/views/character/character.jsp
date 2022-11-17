@@ -91,7 +91,7 @@
             return;
         }
         await selectUserInfo(lastSegment);
-        await selectComments();
+        await selectComments(lastSegment);
     }
     const selectUserInfo = async (characterName) => {
         const url = "/" + characterName + "/character";
@@ -113,7 +113,6 @@
         document.getElementById('character_area').className = 'inactive';
 
         document.getElementById('image').src = info.image;
-        document.getElementById('characterId').value = info.id;
         document.getElementById('rank').innerHTML = threeComma(info.rank);
         document.getElementById('rankMove').innerHTML = threeComma(info.rankMove);
         document.getElementById('userName').innerHTML = info.userName;
@@ -125,14 +124,13 @@
         document.getElementById('guildName').innerHTML = info.guildName==null?'-':info.guildName;
     }
 
-    const selectComments = async () => {
+    const selectComments = async (characterName) => {
         document.querySelectorAll('#commentList>div').forEach((ele)=>ele.remove());
-        const id = document.getElementById('characterId').value;
-        if(id == null || id.length == 0) {
+        if(characterName == null || characterName.length == 0) {
             return;
         }
 
-        const url = "/" + id + "/comments";
+        const url = "/" + characterName + "/comments";
         const method = METHOD_TYPE.GET;
         const header = {
             "Content-Type": "application/json",
@@ -148,7 +146,7 @@
         /**
          * TODO
          * id
-         * characterId
+         * characterName
          * userId
          * comment
          * createdAt
@@ -175,7 +173,9 @@
         const header = {
             'Content-Type': 'application/json'
         };
-        const body = JSON.stringify(getFormDataJson("frmComment"));
+        let body = getFormDataJson("frmComment");
+        body.characterName = getURILastSegment();
+        body = JSON.stringify(body);
 
         const response = await mapleFetchAsync(url, method, header, body);
 
@@ -186,7 +186,7 @@
 
         alert('댓글이 등록되었습니다.');
         document.getElementById('comment').value = "";
-        await selectComments();
+        await selectComments(getURILastSegment());
     }
 
     const commentWriteBlind = () => {

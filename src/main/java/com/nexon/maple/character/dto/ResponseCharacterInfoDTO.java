@@ -1,5 +1,6 @@
 package com.nexon.maple.character.dto;
 
+import com.nexon.maple.character.entity.CharacterInfo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -30,5 +31,21 @@ public class ResponseCharacterInfoDTO {
         this.experience = experience;
         this.popularity = popularity;
         this.guildName = guildName;
+    }
+
+    public static ResponseCharacterInfoDTO of(CharacterInfo characterInfo) {
+        return ResponseCharacterInfoDTO.builder()
+                .id(characterInfo.getId())
+                .image(characterInfo.getImage())
+                .rank(characterInfo.getCharacterRank())
+                .rankMove(characterInfo.getRankMove())
+                .userName(characterInfo.getName())
+                .job1(characterInfo.getJob1())
+                .job2(characterInfo.getJob2())
+                .level(characterInfo.getCharacterLevel())
+                .experience(characterInfo.getExperience())
+                .popularity(characterInfo.getPopularity())
+                .guildName(characterInfo.getGuildName())
+                .build();
     }
 }

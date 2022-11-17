@@ -123,7 +123,8 @@ const effectiveToken = async () => {
 
 const getURILastSegment = () => {
     const parts = window.location.pathname.split('/');
-    return parts.pop() || parts.pop();  // handle potential trailing slash
+    const segment = parts.pop() || parts.pop();  // handle potential trailing slash
+    return decodeURI(segment);
 }
 
 const threeComma = (str) => {

@@ -1,33 +1,41 @@
 package com.nexon.maple.util.maplestoryHomepage;
 
 import com.nexon.maple.util.maplestoryHomepage.object.MapleCharacter;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class CustomMapleCharacter {
+import java.io.IOException;
+
+public class CustomMapleCharacter extends CustomDocument{
     private static final String PREFIX_URL = "https://maplestory.nexon.com/Ranking/World/Total?w=0&c=";
-    private MapleCharacter mapleCharacter;
+    private final String name;
 
     public CustomMapleCharacter(String name) {
-        init(new CustomDocument(PREFIX_URL+name));
+        this.name = name;
     }
 
-    private void init(CustomDocument customDocument) {
-        Elements elements = getElements(customDocument);
+    @Override
+    public MapleCharacter build() throws IOException {
+        Document document = connect(PREFIX_URL+name);
+        Elements elements = document.select("tr.search_com_chk");
+        return ofMapleCharacter(elements);
+    }
 
+    /*
+        goal : 검색된 정보를 가공하여 MapleCharacter 타입으로 반환
+        param : elements (검색된 정보)
+        return : MapleCharacter (메이플 케릭터 정보)
+    */
+    private MapleCharacter ofMapleCharacter(Elements elements) {
         if(elements.isEmpty()) {
-            return;
+            return null;
         }
 
         Element rankInfo = elements.first();
-        String[] rankInfoList = findRankInfoList(rankInfo);
-        String guildName = findGuildName(rankInfoList);
-
-        setMapleCharacter(rankInfo, rankInfoList, guildName);
-    }
-
-    private void setMapleCharacter(Element rankInfo, String[] rankInfoList, String guildName) {
         String image = rankInfo.selectFirst("span.char_img > img").attr("src");
+
+        String[] rankInfoList = parseRankInfoList(rankInfo);
         Long rank = Long.parseLong(rankInfoList[0]);
         String rankMove = rankInfoList[1];
         String userName = rankInfoList[2];
@@ -36,41 +44,40 @@ public class CustomMapleCharacter {
         String level = rankInfoList[6];
         String experience = rankInfoList[7];
         Long popularity = Long.valueOf(rankInfoList[8]);
-        mapleCharacter = new MapleCharacter(image, rank, rankMove, userName, job1, job2, level, experience, popularity, guildName);
+
+        String guildName = parseGuildName(rankInfoList);
+
+        return new MapleCharacter(image, rank, rankMove, userName, job1, job2, level, experience, popularity, guildName);
     }
 
-    private Elements getElements(CustomDocument customDocument) {
-        return customDocument.getElements("tr.search_com_chk");
+    /*
+        goal : guild name 추출
+     */
+    private String parseGuildName(String[] rankInfoList) {
+        if (rankInfoList.length == 10) {
+            return rankInfoList[9];
+        }
+        return null;
     }
 
-    private String[] findRankInfoList(Element rankInfo) {
-        return getRankInfo(rankInfo)
+    /*
+        goal : String 정보를 String []으로 변환
+     */
+    private String[] parseRankInfoList(Element rankInfo) {
+        return parseRankText(rankInfo)
                 .replaceAll(",|Lv.", "")
                 .split("\\s");
     }
 
-    private String findGuildName(String[] rankInfoList) {
-        if(rankInfoList.length == 10) {
-            return rankInfoList[9];
-        }
-        
-        return null;
-    }
-
-    private String getRankInfo(Element rankInfo) {
-
-        String rankInfoText = rankInfo.text();
-
+    /*
+        goal : String 정보를 String []으로 변환
+     */
+    private String parseRankText(Element rankInfo) {
         String rankInfoClassName = rankInfo.className();
         int rankInfoClassNameIndexOf = rankInfoClassName.indexOf("rank0");
-        if(rankInfoClassNameIndexOf > -1) {
-            rankInfoText = rankInfoClassName.substring(rankInfoClassNameIndexOf+5,rankInfoClassNameIndexOf+6) + " " + rankInfoText;
-        }
 
-        return rankInfoText;
-    }
-
-    public MapleCharacter getMapleCharacter() {
-        return mapleCharacter;
+        return rankInfoClassNameIndexOf > -1 ?
+                rankInfoClassName.substring(rankInfoClassNameIndexOf+5, rankInfoClassNameIndexOf+6) + " " + rankInfo.text() :
+                rankInfo.text();
     }
 }

@@ -23,7 +23,7 @@ public class ViewService {
         List<TermsInfo> list = termsInfoDao.findAllByType(TermsType.LOGIN.getTitle());
 
         return list.stream()
-                .map(ResponseTermsInfoDTO::new)
+                .map(termsInfo -> ResponseTermsInfoDTO.of(termsInfo))
                 .collect(Collectors.toList());
     }
 }

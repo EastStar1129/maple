@@ -1,31 +1,23 @@
 package com.nexon.maple.terms.service;
 
-import com.nexon.maple.terms.entity.TermsAgreeInfo;
+import com.nexon.maple.terms.entity.TermsInfo;
 import com.nexon.maple.terms.repository.TermsInfoDao;
+import com.nexon.maple.terms.type.TermsType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class TermsInfoWriteService {
     private final TermsInfoDao termsInfoDao;
 
-    public void saveAllTermsInfo(List<String> termsList, Long userId) {
-        for(String terms: termsList) {
-            saveTermsInfo(Long.parseLong(terms), userId);
-        }
-    }
-
-    public void saveTermsInfo(Long terms, Long userId) {
-        TermsAgreeInfo termsAgreeInfo = TermsAgreeInfo.builder()
-                .userId(userId)
-                .termsCode(terms)
-                .agreeYn("Y")
-                .build();
-
-        Assert.isTrue(termsInfoDao.save(termsAgreeInfo) == 1, "약관동의여부가 저장되지 않았습니다.");
+    @Transactional
+    public TermsInfo saveLoginType(String name, String content) {
+        TermsInfo termsInfo = TermsInfo.ofRequiredTerms(TermsType.LOGIN.getTitle(), name, content);
+        termsInfoDao.save(termsInfo);
+        Assert.notNull(termsInfo.getCode(), "약관정보가 저장되지 않았습니다.");
+        return termsInfo;
     }
 }

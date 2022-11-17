@@ -13,25 +13,26 @@ import java.util.Objects;
 @Getter
 public class CommentInfo {
     private Long id;
-    private Long characterId;
+    private String characterName;
     private Long userId;
     private String comment;
     private LocalDateTime createdAt;
 
     @Builder
-    public CommentInfo(Long id, Long characterId, Long userId, String comment, LocalDateTime createdAt) {
+    public CommentInfo(Long id, String characterName, Long userId, String comment, LocalDateTime createdAt) {
         this.id = id;
-        this.characterId = Objects.requireNonNull(characterId);
+        this.characterName = Objects.requireNonNull(characterName);
         this.userId = Objects.requireNonNull(userId);
         this.comment = Objects.requireNonNull(comment);
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
+        this.createdAt = createdAt;
     }
 
     public static CommentInfo of(WriteCommentDTO writeCommentDTO, ResponseUserInfoDTO userInfo) {
         CommentInfo commentInfo = CommentInfo.builder()
-                .characterId(writeCommentDTO.getCharacterId())
+                .characterName(writeCommentDTO.getCharacterName())
                 .userId(userInfo.id())
                 .comment(writeCommentDTO.getComment())
+                .createdAt(LocalDateTime.now())
                 .build();
         return commentInfo;
     }

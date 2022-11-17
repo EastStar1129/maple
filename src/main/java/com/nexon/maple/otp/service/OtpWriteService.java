@@ -14,17 +14,15 @@ public class OtpWriteService {
 
     //otp 발급
     public String createOtp(String userName) {
-        Otp otp = Otp.builder()
-                .userName(userName)
-                .build();
-
-        saveOtp(otp);
-        return otp.getOtpNumber();
+        Otp otp = Otp.of(userName);
+        return saveOtp(otp).getOtpNumber();
     }
 
-    private void saveOtp(Otp otp) {
-        int saveResult = otpDao.save(otp);
-        Assert.isTrue(saveResult == 1, "OTP 발급 에러");
+    public Otp saveOtp(Otp otp) {
+        otpDao.save(otp);
+        Assert.notNull(otp.getIdx(), "OTP 발급에 실패했습니다.");
+
+        return otp;
     }
 
 }

@@ -20,18 +20,10 @@ class UserInfoTest {
         String name = "캐릭터";
         String password = "password";
 
-        UserInfo userInfo = UserInfo.builder()
-                .name(name)
-                .password(password)
-                .build();
-
         //when
-        userInfo.encryptPassword(bCryptPasswordEncoder);
+        UserInfo userInfo = UserInfo.of(password, name, bCryptPasswordEncoder);
 
-        /*
-         * 코드는 옵션사항이다.
-         * 패스워드는 암호화되어 저장된다.
-         * */
+        //then
         assertAll(
                 () -> assertEquals(name, userInfo.getName()),
                 () -> assertTrue(bCryptPasswordEncoder.matches(password, userInfo.getPassword()))
@@ -42,30 +34,26 @@ class UserInfoTest {
     public void 이름은12자리_패스워드는8에서15자리_실패_테스트() {
         //given
         String name = "1234567890123";
-        String password = "123456789123456789";
+        String password = "123456789123456789123456789123456789";
         String password2 = "12";
 
         String name_pass = "123456";
         String password_pass = "123456789";
 
         //when-then
-
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class,
-                                () -> UserInfo.builder()
-                                        .name(name_pass)
-                                        .password(password)
-                                        .build()),
+                        () -> UserInfo.validation(password, name_pass)),
                 () -> assertThrows(IllegalArgumentException.class,
-                        () -> UserInfo.builder()
-                                .name(name_pass)
-                                .password(password2)
-                                .build()),
+                        () -> UserInfo.validation(password2, name_pass)),
                 () -> assertThrows(IllegalArgumentException.class,
-                        () -> UserInfo.builder()
-                                .name(name)
-                                .password(password_pass)
-                                .build())
+                        () -> UserInfo.validation(password_pass, name)),
+                () -> assertThrows(IllegalArgumentException.class,
+                                () -> UserInfo.of(password, name_pass, bCryptPasswordEncoder)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> UserInfo.of(password2, name_pass, bCryptPasswordEncoder)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> UserInfo.of(password_pass, name, bCryptPasswordEncoder))
         );
     }
 
